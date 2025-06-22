@@ -1,4 +1,4 @@
-import { apiCall } from "@/api";
+import axios from "axios";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 export type User = {
@@ -33,7 +33,10 @@ export const useUser = create<IUserState>()(
       refreshToken: async () => {
         const user = get().user as User;
 
-        const response = await apiCall.get("/authentication/refresh-token");
+        const response = await axios.get(
+          `${import.meta.env.VITE_API_BASE_URL}/authentication/refresh-token`,
+          { withCredentials: true }
+        );
         const newAccessToken = response.data.accessToken;
 
         set({ user: { ...user, accessToken: newAccessToken } });

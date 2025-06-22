@@ -1,25 +1,25 @@
 import appConfig from "@/app.config";
 import axios from "axios";
-import { useUser } from "@/store/use-user";
+
 import { jwtDecode } from "jwt-decode";
 import dayjs from "dayjs";
-
-const user = useUser.getState().user;
-const refreshToken = useUser.getState().refreshToken;
 
 export const apiCall = axios.create({
   baseURL: appConfig.apiBaseUrl,
   withCredentials: true,
   headers: {
-    Authorization: `Bearer ${user?.accessToken}`,
+    "Content-Type": "application/json",
   },
 });
 
 apiCall.interceptors.request.use(async (config) => {
-  const accessToken = user?.accessToken;
-  if (!accessToken) {
-    config.headers.Authorization = `Bearer ${accessToken}`;
-  }
+  const userStore = await import("@/store/use-user");
+
+  let store = userStore.useUser.getState();
+
+  let accessToken = store.user?.accessToken;
+
+  config.headers.Authorization = `Bearer ${accessToken}`;
 
   const decodedToken = jwtDecode(accessToken as string);
 
@@ -28,7 +28,7 @@ apiCall.interceptors.request.use(async (config) => {
 
   if (!isExipired) return config;
 
-  const newAccessToken = await refreshToken();
+  const newAccessToken = await store.refreshToken();
 
   config.headers.Authorization = `Bearer ${newAccessToken}`;
   return config;

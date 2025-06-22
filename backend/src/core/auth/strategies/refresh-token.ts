@@ -18,6 +18,7 @@ export class RefreshTokenStrategy extends PassportStrategy(
         (request: Request) => {
           if (request && request.cookies) {
             const refreshToken = request.cookies['refresh-token'];
+
             if (refreshToken) {
               return refreshToken;
             }

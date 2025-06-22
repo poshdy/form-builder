@@ -9,13 +9,14 @@ import { routeTree } from "./routeTree.gen";
 
 import "./styles.css";
 import reportWebVitals from "./reportWebVitals.ts";
-// import { Toaster } from "@/components/ui/sonner.tsx";
+import { useUser } from "./store/use-user.tsx";
 
 // Create a new router instance
 const router = createRouter({
   routeTree,
   context: {
     ...TanstackQuery.getContext(),
+    auth: undefined!,
   },
   defaultPreload: "intent",
   scrollRestoration: true,
@@ -30,6 +31,15 @@ declare module "@tanstack/react-router" {
   }
 }
 
+function InnerApp() {
+  const auth = useUser();
+  return <RouterProvider router={router} context={{ auth }} />;
+}
+
+function App() {
+  return <InnerApp />;
+}
+
 // Render the app
 const rootElement = document.getElementById("app");
 if (rootElement && !rootElement.innerHTML) {
@@ -37,7 +47,7 @@ if (rootElement && !rootElement.innerHTML) {
   root.render(
     <StrictMode>
       <TanstackQuery.Provider>
-        <RouterProvider router={router} />
+        <App />
       </TanstackQuery.Provider>
     </StrictMode>
   );

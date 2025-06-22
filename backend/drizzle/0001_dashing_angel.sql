@@ -1,1 +1,0 @@
-ALTER TABLE "form" RENAME COLUMN "share_url" TO "public_url";

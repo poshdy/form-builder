@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule, Req } from '@nestjs/common';
 import { DatabaseModule } from './core/database/database.module';
 import { AuthModule } from './core/auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
@@ -6,7 +6,7 @@ import { UserModule } from './user/user.module';
 import { AccountModule } from './core/account/account.module';
 import { FormModule } from './form/form.module';
 import configuration from './core/configuration/configuration';
-
+import { RequestLogger } from './common/middlewares/request-logger';
 
 @Module({
   imports: [

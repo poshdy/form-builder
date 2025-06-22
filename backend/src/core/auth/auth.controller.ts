@@ -12,7 +12,7 @@ import {
 import { AuthService } from './auth.service';
 import { loginPayload, loginSchema, signUpPayload, signUpSchema } from './dto';
 import { ZodValidationPipe } from 'src/lib/zod-pipe';
-import { Response } from 'express';
+import { CookieOptions, Response } from 'express';
 import { RefreshTokenGuard, AuthenticationGuard } from './guards';
 import { User } from './decorators/user.decorator';
 import { UserTokenPayload } from '../types';
@@ -20,7 +20,11 @@ import { UserTokenPayload } from '../types';
 @Controller('authentication')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
-  cookieOptions = { httpOnly: true, domain: 'localhost', secure: false };
+  cookieOptions: CookieOptions = {
+    httpOnly: true,
+    path: '/',
+    maxAge: 259200000,
+  };
 
   @UsePipes(new ZodValidationPipe(signUpSchema))
   @HttpCode(HttpStatus.CREATED)
@@ -32,7 +36,8 @@ export class AuthController {
   ) {
     const res = await this.authService.signUp(payload);
 
-    response.cookie('session-token', res.accessToken, this.cookieOptions);
+    console.log({ access: res.accessToken, refresh: res.refreshToken });
+    response.cookie('access-token', res.accessToken, this.cookieOptions);
     response.cookie('refresh-token', res.refreshToken, this.cookieOptions);
 
     const { refreshToken, ...rest } = res;
@@ -48,8 +53,8 @@ export class AuthController {
   ) {
     const res = await this.authService.login(payload);
 
-    console.log({ res });
-    response.cookie('session-token', res.accessToken, this.cookieOptions);
+    console.log({ access: res.accessToken, refresh: res.refreshToken });
+    response.cookie('access-token', res.accessToken, this.cookieOptions);
     response.cookie('refresh-token', res.refreshToken, this.cookieOptions);
 
     return response.json({ data: res });
@@ -67,7 +72,7 @@ export class AuthController {
     response.clearCookie('session-token');
     response.clearCookie('refresh-token');
 
-    response.cookie('session-token', res.accessToken, this.cookieOptions);
+    response.cookie('access-token', res.accessToken, this.cookieOptions);
     response.cookie('refresh-token', res.refreshToken, this.cookieOptions);
     response.json({ accessToken: res.accessToken });
   }

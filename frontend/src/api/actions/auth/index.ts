@@ -7,7 +7,8 @@ export const signUp = async (values: signUpPayload) => {
   try {
     const response = await axios.post(
       `${appConfig.apiBaseUrl}/authentication/register`,
-      values
+      values,
+      { withCredentials: true }
     );
 
     return response.data;
@@ -27,7 +28,8 @@ export const signIn = async (values: loginPayload) => {
   try {
     const response = await axios.post(
       `${appConfig.apiBaseUrl}/authentication/login`,
-      values
+      values,
+      { withCredentials: true }
     );
 
     return response.data;
