@@ -1,4 +1,5 @@
 import { getForms, getFormStats } from "@/api/data-access/form";
+import NavigationBar from "@/components/Header";
 import { Loader } from "@/components/Loader";
 import { CreateUpdateFormModal } from "@/components/pages/forms/create-update-modal";
 import { FormCard } from "@/components/pages/forms/form-card";
@@ -39,17 +40,15 @@ function FormsLayout() {
     );
 
   return (
-    <div className="min-h-screen dark ">
+    <div className="min-h-screen  ">
+      <NavigationBar />
       <main className="container mx-auto px-6 py-8">
-        {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-foreground mb-2">Forms</h1>
           <p className="text-muted-foreground">
             Manage your forms and track their performance
           </p>
         </div>
-
-        {/* Stats Cards */}
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <FormStatsCard
@@ -74,7 +73,6 @@ function FormsLayout() {
           />
         </div>
 
-        {/* Forms Grid */}
         <div className="space-y-6">
           <div className="flex items-center justify-between">
             <h2 className="text-xl font-semibold text-foreground">

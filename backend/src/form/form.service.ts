@@ -45,7 +45,7 @@ export class FormService {
   async getForm({ user, formId }: FormMutation) {
     try {
       return await this.database.form.findUnique({
-        where: { id: formId, accountId: user.accountId },
+        where: { id: formId },
       });
     } catch (error) {
       this.logger.error({ error });

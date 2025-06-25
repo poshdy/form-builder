@@ -55,7 +55,11 @@ export class FormController {
 
   @HttpCode(HttpStatus.OK)
   @Get(':formId')
-  async getForm(@User() user: UserTokenPayload, @Param() formId: string) {
+  async getForm(
+    @User() user: UserTokenPayload,
+    @Param('formId') formId: string,
+  ) {
+    console.log({ formId });
     const form = await this.formService.getForm({ user, formId });
 
     return {

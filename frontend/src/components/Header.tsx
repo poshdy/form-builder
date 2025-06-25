@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { Link } from "@tanstack/react-router";
 import { Plus, Settings, User } from "lucide-react";
 
 const NavigationBar = () => {
@@ -21,12 +22,13 @@ const NavigationBar = () => {
               >
                 Dashboard
               </a>
-              <a
-                href="#"
+              <Link
                 className="text-muted-foreground hover:text-foreground transition-colors"
+                to="/forms"
               >
                 Forms
-              </a>
+              </Link>
+
               <a
                 href="#"
                 className="text-muted-foreground hover:text-foreground transition-colors"

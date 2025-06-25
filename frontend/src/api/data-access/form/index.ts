@@ -13,7 +13,7 @@ export const getForms = async () => {
 
 export const getForm = async (formId: string) => {
   try {
-    const response = await apiCall.get(`/form/${formId}`);
+    const response = await apiCall.get(`/forms/${formId}`);
 
     return response.data.data;
   } catch (error) {
