@@ -12,7 +12,7 @@ import { Building, Edit2, Trash } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { ActionsMenu, type MenuItems } from "@/components/actions-menu";
 import { timeDistance } from "@/lib/dayjs";
-import { Input } from "@/components/ui/input";
+
 
 type FormCardProps = {
   form: Form;
@@ -58,7 +58,6 @@ export const FormCard = ({ form }: FormCardProps) => {
             formId: form.id,
           }}
         >
-          <Input type=""/>
           Build <Building />
         </Link>
       </CardContent>
