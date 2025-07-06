@@ -14,6 +14,7 @@ interface IBuilderContext {
   updateElementProps: (id: string, element: FormElementInstance) => void;
   handleAdd: (position: number, element: FormElementInstance) => void;
   setActiveElement: Dispatch<SetStateAction<FormElementInstance | null>>;
+  setElements: Dispatch<SetStateAction<FormElementInstance[]>>;
   handleRemove: (id: string) => void;
   elements: FormElementInstance[];
   activeElement: FormElementInstance | null;
@@ -57,6 +58,7 @@ export const BuilderContextProvider = ({
       value={{
         elements,
         activeElement,
+        setElements,
         updateElementProps,
         setActiveElement,
         handleAdd,

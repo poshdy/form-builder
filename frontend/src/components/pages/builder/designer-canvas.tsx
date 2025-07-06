@@ -11,43 +11,68 @@ import { FaRegTrashAlt } from "react-icons/fa";
 import { DesignerComponent } from "./designer-component";
 import { useBuilderContext } from "@/builder/context/builder-context";
 
+import { CSS } from "@dnd-kit/utilities";
+import {
+  useSortable,
+  SortableContext,
+  verticalListSortingStrategy,
+  arrayMove,
+} from "@dnd-kit/sortable";
+
 const Designer = () => {
-  const { elements, handleAdd, setActiveElement, activeElement } =
+  const { elements, handleAdd, setActiveElement, activeElement, setElements } =
     useBuilderContext();
   const { setNodeRef, isOver } = useDroppable({
     id: "designer",
+
+    data: {
+      isDesignerContainer: true,
+    },
   });
 
   useDndMonitor({
     onDragEnd(event) {
       const data = event.active.data.current;
-      const over = event.over?.data;
-
+      const over = event.over?.data.current;
       const type = data?.type as FormElementType;
-
       const newElement = FormElements[type].constructor(cuid());
 
-      const isTopElement = over?.current?.isTopElement;
-      const isBottom = over?.current?.isBottomElement;
+      const isDesignerElement = data?.isDesignerBtnElement;
 
-      let position = 0;
+      if (isDesignerElement && over?.isDesignerContainer && !data?.sortable) {
+        handleAdd(elements.length, newElement);
+      }
+      if (data?.sortable) {
+        const oldId = event.active?.id as string;
+        const overId = over?.id as string;
 
-      if (isTopElement) {
-        const itemId = over.current?.id;
-        const itemPosition = elements.findIndex(
-          (element) => element.id === itemId
-        );
-        position = itemPosition;
-      } else if (isBottom) {
-        const itemId = over.current?.id;
-        const itemPosition = elements.findIndex(
-          (element) => element.id === itemId
-        );
+        setElements((prev) => {
+          const oldIndex = elements.findIndex((element) => element.id == oldId);
+          const overIndex = elements.findIndex(
+            (element) => element.id == overId
+          );
 
-        position = itemPosition + 1;
+          const newArr = arrayMove(prev, oldIndex, overIndex);
+          console.log({ prev });
+          console.log({ newArr });
+
+          return newArr;
+        });
       }
 
-      handleAdd(position, newElement);
+      const isDroppingBetweenElements =
+        over?.isTopElement || over?.isBottomElement;
+
+      if (!data?.sortable && isDroppingBetweenElements) {
+        const itemId = over?.id;
+        const itemPosition = elements.findIndex(
+          (element) => element.id === itemId
+        );
+        handleAdd(
+          over?.isTopElement ? itemPosition + 1 : itemPosition,
+          newElement
+        );
+      }
     },
   });
 
@@ -79,15 +104,20 @@ const Designer = () => {
         </div>
       )}
 
-      {isOver && <div className="w-full rounded-2xl bg-accent mb-3 h-20"></div>}
-
       {elements.length && (
-        <div ref={elementCardRef} className="flex flex-col w-full gap-2">
-          {elements.map((element) => (
-            <DesignerComponentWrapper element={element} key={element.id} />
-          ))}
-        </div>
+        <SortableContext
+          items={elements}
+          strategy={verticalListSortingStrategy}
+        >
+          <div ref={elementCardRef} className="flex flex-col w-full gap-2">
+            {elements.map((element) => (
+              <DesignerComponentWrapper element={element} key={element.id} />
+            ))}
+          </div>
+        </SortableContext>
       )}
+
+      {isOver && <div className="w-full rounded-2xl bg-accent mt-3 h-16" />}
     </div>
   );
 };
@@ -99,6 +129,24 @@ function DesignerComponentWrapper({
 }: {
   element: FormElementInstance;
 }) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    isDragging,
+    transform,
+    transition,
+  } = useSortable({
+    id: element.id,
+    data: {
+      type: element.type,
+    },
+  });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
   const { handleRemove, setActiveElement } = useBuilderContext();
   const topElement = useDroppable({
     id: element.id + "-top",
@@ -109,6 +157,7 @@ function DesignerComponentWrapper({
       isTopElement: true,
     },
   });
+
   const bottomElement = useDroppable({
     id: element.id + "-bottom",
     data: {
@@ -120,21 +169,32 @@ function DesignerComponentWrapper({
   });
 
   return (
-    <div className="group relative flex overflow-clip flex-col items-center justify-center rounded-md bg-secondary/70 text-muted-foreground h-[120px] ">
-      <div className="hidden  group-hover:flex absolute w-full h-full inset-0 z-40 bg-background/60">
-        <span
-          onClick={(e) => {
-            e.stopPropagation();
-            setActiveElement(element);
-          }}
-          className="text-xs cursor-pointer absolute w-[calc(100% - w-1/5)] top-[50%] left-[50%]  translate-x-[-50%] translate-y-[-50%]"
-        >
+    <div
+      style={style}
+      ref={setNodeRef}
+      {...listeners}
+      {...attributes}
+      className={cn(
+        "group relative flex overflow-clip flex-col items-center justify-center rounded-md bg-secondary/70 text-muted-foreground h-[120px]"
+      )}
+    >
+      <div
+        onClick={(e) => {
+          e.stopPropagation();
+          setActiveElement(element);
+        }}
+        className="hidden  group-hover:flex absolute w-full h-full inset-0 z-40 bg-background/60"
+      >
+        <span className="text-xs cursor-pointer absolute w-[calc(100% - w-1/5)] top-[50%] left-[50%]  translate-x-[-50%] translate-y-[-50%]">
           Click to edit element Attributes
         </span>
 
         <div
-          onClick={() => handleRemove(element.id)}
-          className="w-1/5 absolute right-0 top-0 flex cursor-pointer z-20 items-center justify-center bg-red-500/70 h-full "
+          onClick={(e) => {
+            e.stopPropagation();
+            handleRemove(element.id);
+          }}
+          className="w-[8%] absolute right-0 top-0 flex cursor-pointer z-20 items-center justify-center bg-red-500/70 h-full "
         >
           <FaRegTrashAlt className="text-secondary-foreground" />
         </div>
@@ -143,17 +203,23 @@ function DesignerComponentWrapper({
       <div
         ref={topElement.setNodeRef}
         className={cn(
-          "absolute inset-0 w-full h-[10%] rounded-t-md",
+          "absolute inset-0 w-full h-[8%] rounded-t-md",
           topElement.isOver && "bg-secondary-foreground"
         )}
       />
-      <div className="w-full h-full flex items-center">
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className={cn(
+          "w-full h-full flex items-center",
+          isDragging && "border rounded-md border-primary"
+        )}
+      >
         <DesignerComponent elementInstance={element} />
       </div>
       <div
         ref={bottomElement.setNodeRef}
         className={cn(
-          "absolute bottom-0 w-full h-[10%] rounded-b-md",
+          "absolute bottom-0 w-full h-[8%] rounded-b-md",
           bottomElement.isOver && "bg-secondary-foreground"
         )}
       />

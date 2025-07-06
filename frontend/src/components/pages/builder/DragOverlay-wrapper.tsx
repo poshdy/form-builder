@@ -22,6 +22,10 @@ const DragOverlayWrapper = () => {
     const type = draggedItem.data?.current?.type as FormElementType;
 
     node = <ItemOverlay formElement={FormElements[type]} />;
+  } else {
+    const type = draggedItem.data?.current?.type as FormElementType;
+
+    node = <div className="">Moving {type}</div>;
   }
 
   return <DragOverlay>{node}</DragOverlay>;
