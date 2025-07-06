@@ -16,7 +16,7 @@ import { FormService } from './form.service';
 import { AuthenticationGuard } from 'src/core/auth/guards';
 import { User } from 'src/core/auth/decorators/user.decorator';
 import { UserTokenPayload } from 'src/core/types';
-import { CreateFormDto } from './dto';
+import { CreateFormDto, SaveFormDto } from './dto';
 import { ZodValidationPipe } from 'nestjs-zod';
 
 @UseGuards(AuthenticationGuard)
@@ -61,6 +61,19 @@ export class FormController {
   ) {
     console.log({ formId });
     const form = await this.formService.getForm({ user, formId });
+
+    return {
+      data: form,
+    };
+  }
+  @HttpCode(HttpStatus.OK)
+  @Patch('/save/:formId')
+  async saveForm(
+    @User() user: UserTokenPayload,
+    @Param('formId') formId: string,
+    @Body() data: SaveFormDto,
+  ) {
+    const form = await this.formService.saveForm({ data: data.fields, formId });
 
     return {
       data: form,

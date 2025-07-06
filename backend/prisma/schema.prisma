@@ -46,7 +46,7 @@ model Form {
   title       String
   description String?
 
-  fields String[] @default([])
+  fields String?
 
   submissions Int @default(0)
   visits      Int @default(0)

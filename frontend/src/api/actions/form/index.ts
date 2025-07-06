@@ -1,4 +1,8 @@
-import type { FormPayload, UpdateFormPayload } from "@/schemas/form";
+import type {
+  FormPayload,
+  SaveFormPayload,
+  UpdateFormPayload,
+} from "@/schemas/form";
 import { apiCall } from "@/api";
 
 export const createForm = async (payload: FormPayload) => {
@@ -16,6 +20,14 @@ export const createForm = async (payload: FormPayload) => {
 export const updateForm = async (id: string, payload: UpdateFormPayload) => {
   try {
     const response = await apiCall.patch(`/forms/${id}`, payload);
+    return response.data;
+  } catch (error) {
+    console.error({ error });
+  }
+};
+export const saveForm = async (id: string, payload: SaveFormPayload) => {
+  try {
+    const response = await apiCall.patch(`/forms/save/${id}`, payload);
     return response.data;
   } catch (error) {
     console.error({ error });

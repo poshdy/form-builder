@@ -1,14 +1,56 @@
+import { saveForm } from "@/api/actions/form";
+import { useBuilderContext } from "@/builder/context/builder-context";
+import { Loader } from "@/components/Loader";
 import { Button } from "@/components/ui/button";
+import { saveSchema } from "@/schemas/form";
+import { useMutation } from "@tanstack/react-query";
+import { toast } from "sonner";
 
-export const BuilderHeader = ({ formTitle }: { formTitle: string }) => {
+export const BuilderHeader = ({
+  formTitle,
+  id,
+}: {
+  formTitle: string;
+  id: string;
+}) => {
+  const { elements } = useBuilderContext();
+  const { mutateAsync, isPending } = useMutation({
+    mutationFn: async () =>
+      await saveForm(id, { fields: JSON.stringify(elements) }),
+    onSuccess() {
+      toast.success("Form Saved Successfully!");
+    },
+  });
   return (
     <header className="w-full flex justify-between items-center px-4 py-2 bg-secondary">
       <h3 className="font-bold text-xl">{formTitle}</h3>
 
-      <div className="flex items-center gap-1">
-        <Button variant={"outline"}>Preview</Button>
+      <div className="flex items-center gap-6">
+        <Button size={"sm"} variant={"outline"}>
+          Preview
+        </Button>
         <div className="flex items-center gap-1">
-          <Button>Publish</Button>
+          <Button
+            onClick={async () => {
+              const fields = JSON.stringify(elements);
+              const parsed = saveSchema.safeParse({ fields });
+
+              if (parsed.success) {
+                await mutateAsync();
+              } else {
+                toast.error(`${parsed.error.message}`);
+              }
+            }}
+            disabled={elements.length == 0 || isPending}
+            size={"sm"}
+            variant={"secondary"}
+            className="cursor-pointer"
+          >
+            {isPending ? <Loader size={10} className="" /> : "Save"}
+          </Button>
+          <Button size={"sm"} variant={"default"}>
+            Publish
+          </Button>
         </div>
       </div>
     </header>

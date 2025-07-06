@@ -26,7 +26,7 @@ function RouteComponent() {
 
   return (
     <div className="min-h-screen bg-black flex-col">
-      <BuilderHeader formTitle={data?.title} />
+      <BuilderHeader id={data?.id} formTitle={data?.title} />
       <Separator />
       <DndContext sensors={sensors}>
         <div className="flex">

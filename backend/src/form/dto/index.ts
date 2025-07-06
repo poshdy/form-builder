@@ -7,3 +7,8 @@ export const formSchema = z.object({
 });
 
 export class CreateFormDto extends createZodDto(formSchema) {}
+
+export const saveFormSchema = z.object({
+  fields: z.string(),
+});
+export class SaveFormDto extends createZodDto(saveFormSchema) {}

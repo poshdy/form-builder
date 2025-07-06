@@ -51,6 +51,18 @@ export class FormService {
       this.logger.error({ error });
     }
   }
+  async saveForm({ data, formId }: { formId: string; data: string }) {
+    try {
+      return await this.database.form.update({
+        where: { id: formId },
+        data: {
+          fields: data,
+        },
+      });
+    } catch (error) {
+      this.logger.error({ error });
+    }
+  }
   async updateForm({
     formId,
     user,
