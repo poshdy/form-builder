@@ -52,11 +52,7 @@ const Designer = () => {
             (element) => element.id == overId
           );
 
-          const newArr = arrayMove(prev, oldIndex, overIndex);
-          console.log({ prev });
-          console.log({ newArr });
-
-          return newArr;
+          return arrayMove(prev, oldIndex, overIndex);
         });
       }
 
