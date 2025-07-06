@@ -12,9 +12,6 @@ export type FormElementInstance = {
 export type FormElement = {
   type: FormElementType;
   formComponent: React.FC;
-  designerComponent: React.FC<{ elementInstance: FormElementInstance }>;
-  properties: React.FC;
-
   constructor: (id: string) => FormElementInstance;
   controlBtn: {
     icon: React.ElementType;
@@ -29,4 +26,17 @@ type FormElements = {
 export const FormElements: FormElements = {
   TextField: TextElementField,
   NumberField: NumberElementField,
+};
+
+export const defaultExtraAttributes = {
+  label: "field label",
+  placeholder: "field placeholder",
+  required: false,
+  description: "field description",
+};
+
+export type BaseAttributes = typeof defaultExtraAttributes;
+
+export type CustomElementInstance = FormElementInstance & {
+  extraAttributes: BaseAttributes;
 };

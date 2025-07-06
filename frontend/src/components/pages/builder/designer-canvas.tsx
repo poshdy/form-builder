@@ -1,4 +1,3 @@
-import { useBuilderContext } from "@/builder/context/builder-context";
 import {
   FormElements,
   type FormElementInstance,
@@ -7,10 +6,14 @@ import {
 import { cn } from "@/lib/utils";
 import { useDndMonitor, useDroppable } from "@dnd-kit/core";
 import cuid from "cuid";
+import { useRef } from "react";
 import { FaRegTrashAlt } from "react-icons/fa";
+import { DesignerComponent } from "./designer-component";
+import { useBuilderContext } from "@/builder/context/builder-context";
 
 const Designer = () => {
-  const { elements, handleAdd } = useBuilderContext();
+  const { elements, handleAdd, setActiveElement, activeElement } =
+    useBuilderContext();
   const { setNodeRef, isOver } = useDroppable({
     id: "designer",
   });
@@ -48,6 +51,18 @@ const Designer = () => {
     },
   });
 
+  const elementCardRef = useRef<HTMLDivElement | null>(null);
+
+  const handleClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    if (!activeElement) return;
+    const target = e.target as Node;
+    const isOutsideWrapper = !elementCardRef.current?.contains(target);
+
+    if (isOutsideWrapper && activeElement) {
+      setActiveElement(null);
+    }
+  };
+
   return (
     <div
       className={cn(
@@ -55,6 +70,7 @@ const Designer = () => {
 
         isOver && "border-primary"
       )}
+      onClick={handleClick}
       ref={setNodeRef}
     >
       {elements.length == 0 && !isOver && (
@@ -66,7 +82,7 @@ const Designer = () => {
       {isOver && <div className="w-full rounded-2xl bg-accent mb-3 h-20"></div>}
 
       {elements.length && (
-        <div className="flex flex-col w-full gap-2">
+        <div ref={elementCardRef} className="flex flex-col w-full gap-2">
           {elements.map((element) => (
             <DesignerComponentWrapper element={element} key={element.id} />
           ))}
@@ -83,7 +99,7 @@ function DesignerComponentWrapper({
 }: {
   element: FormElementInstance;
 }) {
-  const { handleRemove } = useBuilderContext();
+  const { handleRemove, setActiveElement } = useBuilderContext();
   const topElement = useDroppable({
     id: element.id + "-top",
     data: {
@@ -103,15 +119,19 @@ function DesignerComponentWrapper({
     },
   });
 
-  const DesignerElementComponent = FormElements[element.type].designerComponent;
   return (
     <div className="group relative flex overflow-clip flex-col items-center justify-center rounded-md bg-secondary/70 text-muted-foreground h-[120px] ">
       <div className="hidden  group-hover:flex absolute w-full h-full inset-0 z-40 bg-background/60">
-        
-        <span className="text-xs absolute w-[calc(100% - w-1/5)] top-[50%] left-[50%]  translate-x-[-50%] translate-y-[-50%]">
+        <span
+          onClick={(e) => {
+            e.stopPropagation();
+            setActiveElement(element);
+          }}
+          className="text-xs cursor-pointer absolute w-[calc(100% - w-1/5)] top-[50%] left-[50%]  translate-x-[-50%] translate-y-[-50%]"
+        >
           Click to edit element Attributes
         </span>
-    
+
         <div
           onClick={() => handleRemove(element.id)}
           className="w-1/5 absolute right-0 top-0 flex cursor-pointer z-20 items-center justify-center bg-red-500/70 h-full "
@@ -128,7 +148,7 @@ function DesignerComponentWrapper({
         )}
       />
       <div className="w-full h-full flex items-center">
-        <DesignerElementComponent elementInstance={element} />
+        <DesignerComponent elementInstance={element} />
       </div>
       <div
         ref={bottomElement.setNodeRef}

@@ -7,7 +7,7 @@ import { BuilderHeader } from "@/components/pages/builder/builder-header";
 import { Separator } from "@/components/ui/separator";
 import DragOverlayWrapper from "@/components/pages/builder/DragOverlay-wrapper";
 import Designer from "@/components/pages/builder/designer-canvas";
-import { BuilderContextProvider } from "@/builder/context/builder-context";
+
 
 export const Route = createFileRoute("/builder/$formId")({
   component: RouteComponent,
@@ -18,8 +18,8 @@ function RouteComponent() {
   const data = Route.useLoaderData();
 
   return (
-    <div className="min-h-screen bg-black flex-col">
-      <BuilderContextProvider>
+    
+      <div className="min-h-screen bg-black flex-col">
         <BuilderHeader formTitle={data?.title} />
         <Separator />
         <DndContext>
@@ -35,7 +35,7 @@ function RouteComponent() {
 
           <DragOverlayWrapper />
         </DndContext>
-      </BuilderContextProvider>
-    </div>
+      </div>
+    
   );
 }
