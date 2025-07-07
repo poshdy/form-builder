@@ -4,6 +4,8 @@ import type {
   UpdateFormPayload,
 } from "@/schemas/form";
 import { apiCall } from "@/api";
+import axios from "axios";
+import appConfig from "@/app.config";
 
 export const createForm = async (payload: FormPayload) => {
   try {
@@ -28,6 +30,17 @@ export const updateForm = async (id: string, payload: UpdateFormPayload) => {
 export const saveForm = async (id: string, payload: SaveFormPayload) => {
   try {
     const response = await apiCall.patch(`/forms/save/${id}`, payload);
+    return response.data;
+  } catch (error) {
+    console.error({ error });
+  }
+};
+export const submitForm = async (id: string, values: string) => {
+  try {
+    const response = await axios.post(
+      `${appConfig.apiBaseUrl}/forms/submission/${id}`,
+      { values }
+    );
     return response.data;
   } catch (error) {
     console.error({ error });

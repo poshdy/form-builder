@@ -13,6 +13,8 @@
 import { Route as rootRoute } from './routes/__root'
 import { Route as FormsRouteImport } from './routes/forms/route'
 import { Route as IndexImport } from './routes/index'
+import { Route as SubmissionFormIdImport } from './routes/submission/$formId'
+import { Route as FormsFormIdImport } from './routes/forms/$formId'
 import { Route as BuilderFormIdImport } from './routes/builder/$formId'
 import { Route as AuthSignUpImport } from './routes/auth/sign-up'
 import { Route as AuthLoginImport } from './routes/auth/login'
@@ -29,6 +31,18 @@ const IndexRoute = IndexImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRoute,
+} as any)
+
+const SubmissionFormIdRoute = SubmissionFormIdImport.update({
+  id: '/submission/$formId',
+  path: '/submission/$formId',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const FormsFormIdRoute = FormsFormIdImport.update({
+  id: '/$formId',
+  path: '/$formId',
+  getParentRoute: () => FormsRouteRoute,
 } as any)
 
 const BuilderFormIdRoute = BuilderFormIdImport.update({
@@ -88,34 +102,66 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BuilderFormIdImport
       parentRoute: typeof rootRoute
     }
+    '/forms/$formId': {
+      id: '/forms/$formId'
+      path: '/$formId'
+      fullPath: '/forms/$formId'
+      preLoaderRoute: typeof FormsFormIdImport
+      parentRoute: typeof FormsRouteImport
+    }
+    '/submission/$formId': {
+      id: '/submission/$formId'
+      path: '/submission/$formId'
+      fullPath: '/submission/$formId'
+      preLoaderRoute: typeof SubmissionFormIdImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
 // Create and export the route tree
 
+interface FormsRouteRouteChildren {
+  FormsFormIdRoute: typeof FormsFormIdRoute
+}
+
+const FormsRouteRouteChildren: FormsRouteRouteChildren = {
+  FormsFormIdRoute: FormsFormIdRoute,
+}
+
+const FormsRouteRouteWithChildren = FormsRouteRoute._addFileChildren(
+  FormsRouteRouteChildren,
+)
+
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/forms': typeof FormsRouteRoute
+  '/forms': typeof FormsRouteRouteWithChildren
   '/auth/login': typeof AuthLoginRoute
   '/auth/sign-up': typeof AuthSignUpRoute
   '/builder/$formId': typeof BuilderFormIdRoute
+  '/forms/$formId': typeof FormsFormIdRoute
+  '/submission/$formId': typeof SubmissionFormIdRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/forms': typeof FormsRouteRoute
+  '/forms': typeof FormsRouteRouteWithChildren
   '/auth/login': typeof AuthLoginRoute
   '/auth/sign-up': typeof AuthSignUpRoute
   '/builder/$formId': typeof BuilderFormIdRoute
+  '/forms/$formId': typeof FormsFormIdRoute
+  '/submission/$formId': typeof SubmissionFormIdRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
-  '/forms': typeof FormsRouteRoute
+  '/forms': typeof FormsRouteRouteWithChildren
   '/auth/login': typeof AuthLoginRoute
   '/auth/sign-up': typeof AuthSignUpRoute
   '/builder/$formId': typeof BuilderFormIdRoute
+  '/forms/$formId': typeof FormsFormIdRoute
+  '/submission/$formId': typeof SubmissionFormIdRoute
 }
 
 export interface FileRouteTypes {
@@ -126,8 +172,17 @@ export interface FileRouteTypes {
     | '/auth/login'
     | '/auth/sign-up'
     | '/builder/$formId'
+    | '/forms/$formId'
+    | '/submission/$formId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/forms' | '/auth/login' | '/auth/sign-up' | '/builder/$formId'
+  to:
+    | '/'
+    | '/forms'
+    | '/auth/login'
+    | '/auth/sign-up'
+    | '/builder/$formId'
+    | '/forms/$formId'
+    | '/submission/$formId'
   id:
     | '__root__'
     | '/'
@@ -135,23 +190,27 @@ export interface FileRouteTypes {
     | '/auth/login'
     | '/auth/sign-up'
     | '/builder/$formId'
+    | '/forms/$formId'
+    | '/submission/$formId'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  FormsRouteRoute: typeof FormsRouteRoute
+  FormsRouteRoute: typeof FormsRouteRouteWithChildren
   AuthLoginRoute: typeof AuthLoginRoute
   AuthSignUpRoute: typeof AuthSignUpRoute
   BuilderFormIdRoute: typeof BuilderFormIdRoute
+  SubmissionFormIdRoute: typeof SubmissionFormIdRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  FormsRouteRoute: FormsRouteRoute,
+  FormsRouteRoute: FormsRouteRouteWithChildren,
   AuthLoginRoute: AuthLoginRoute,
   AuthSignUpRoute: AuthSignUpRoute,
   BuilderFormIdRoute: BuilderFormIdRoute,
+  SubmissionFormIdRoute: SubmissionFormIdRoute,
 }
 
 export const routeTree = rootRoute
@@ -168,14 +227,18 @@ export const routeTree = rootRoute
         "/forms",
         "/auth/login",
         "/auth/sign-up",
-        "/builder/$formId"
+        "/builder/$formId",
+        "/submission/$formId"
       ]
     },
     "/": {
       "filePath": "index.tsx"
     },
     "/forms": {
-      "filePath": "forms/route.tsx"
+      "filePath": "forms/route.tsx",
+      "children": [
+        "/forms/$formId"
+      ]
     },
     "/auth/login": {
       "filePath": "auth/login.tsx"
@@ -185,6 +248,13 @@ export const routeTree = rootRoute
     },
     "/builder/$formId": {
       "filePath": "builder/$formId.tsx"
+    },
+    "/forms/$formId": {
+      "filePath": "forms/$formId.tsx",
+      "parent": "/forms"
+    },
+    "/submission/$formId": {
+      "filePath": "submission/$formId.tsx"
     }
   }
 }

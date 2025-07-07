@@ -5,7 +5,6 @@ import {
   Get,
   HttpCode,
   HttpStatus,
-  Logger,
   Param,
   Patch,
   Post,
@@ -22,7 +21,6 @@ import { ZodValidationPipe } from 'nestjs-zod';
 @UseGuards(AuthenticationGuard)
 @Controller('forms')
 export class FormController {
-  private readonly logger = new Logger(FormController.name);
   constructor(private readonly formService: FormService) {}
 
   @UsePipes(ZodValidationPipe)
@@ -66,6 +64,8 @@ export class FormController {
       data: form,
     };
   }
+
+  @UsePipes(ZodValidationPipe)
   @HttpCode(HttpStatus.OK)
   @Patch('/save/:formId')
   async saveForm(

@@ -1,6 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { DatabaseConnection } from 'src/core/database/database_connection';
-// import { CreateFormPayload, UpdateFormPayload } from './dto';
 import { UserTokenPayload } from 'src/core/types';
 import { ApplicationError } from 'src/lib/application.error';
 import { CreateFormDto } from './dto';
@@ -57,6 +56,18 @@ export class FormService {
         where: { id: formId },
         data: {
           fields: data,
+        },
+      });
+    } catch (error) {
+      this.logger.error({ error });
+    }
+  }
+  async submitForm({ values, formId }: { formId: string; values: string }) {
+    try {
+      return await this.database.formSubmission.create({
+        data: {
+          values,
+          formId,
         },
       });
     } catch (error) {

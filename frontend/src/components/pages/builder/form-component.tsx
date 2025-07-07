@@ -1,7 +1,6 @@
-import type {
-  CustomElementInstance,
-  FormElementInstance,
-} from "@/builder/FormElements";
+import { submitForm } from "@/api/actions/form";
+import type { CustomElementInstance } from "@/builder/FormElements";
+import { Loader } from "@/components/Loader";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -13,39 +12,65 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { generateSchema, type SubmitFormValues } from "@/lib/generate-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
-import * as z from "zod";
+import { toast } from "sonner";
 
 type FormComponentProps = {
   elements: CustomElementInstance[];
   isPreview: boolean;
+  formId: string;
 };
 
-export function FormComponent({ elements, isPreview }: FormComponentProps) {
-  let schema = {} as Record<string, any>;
-
-  elements.forEach((element) => {
-    const validation =
-      element.type == "NumberField" ? z.coerce.number() : z.string();
-    const label = element.extraAttributes.label;
-
-    const field = {
-      [label]: element.extraAttributes.required
-        ? validation
-        : validation.optional(),
-    };
-
-    schema = { ...schema, ...field };
+export function FormComponent({
+  formId,
+  elements,
+  isPreview,
+}: FormComponentProps) {
+  const { mutateAsync, isPending } = useMutation({
+    mutationFn: async ({ id, values }: { id: string; values: string }) =>
+      await submitForm(id, values),
   });
+  const formSchema = generateSchema(elements);
 
-  const formSchema = z.object(schema);
-  const form = useForm<z.infer<typeof formSchema>>({
+  const form = useForm<SubmitFormValues>({
     resolver: zodResolver(formSchema),
   });
 
-  const handleSubmit = async (values: z.infer<typeof formSchema>) => {
-    if (isPreview) {
+  const handleSubmit = async (values: SubmitFormValues) => {
+    if (!isPreview) {
+      const valuesArr = Object.entries(values);
+
+      const submissions = valuesArr.map(([key, value]) => {
+        const element = elements.find(
+          (ele) => ele.extraAttributes.label === key
+        );
+
+        return {
+          type: element ? element.type : undefined,
+          question: key,
+          answer: value ?? "No Answer Given",
+        };
+      });
+
+      const data = JSON.stringify(submissions);
+      await mutateAsync(
+        {
+          id: formId,
+          values: data,
+        },
+        {
+          onSuccess() {
+            // redirect to success page
+            toast.success("Form Submitted Successfully!✅");
+          },
+        }
+      );
+
+      console.log({ message: "Form submitted successfully!" });
+    } else {
       console.log({ values });
       console.log({ message: "Form submitted successfully!" });
     }
@@ -57,6 +82,34 @@ export function FormComponent({ elements, isPreview }: FormComponentProps) {
         className="flex flex-col gap-4"
         onSubmit={form.handleSubmit(handleSubmit)}
       >
+        <FormField
+          name={"name"}
+          control={form.control}
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Name</FormLabel>
+
+              <FormControl>
+                <Input {...field} type={"text"} placeholder={"your name"} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          name={"email"}
+          control={form.control}
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Email</FormLabel>
+
+              <FormControl>
+                <Input {...field} type={"email"} placeholder={"your email"} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         {elements.map(
           ({
             id,
@@ -93,7 +146,13 @@ export function FormComponent({ elements, isPreview }: FormComponentProps) {
           )
         )}
 
-        <Button className="w-full">Submit</Button>
+        <Button disabled={isPending} className="w-full">
+          {isPreview && isPending ? (
+            <Loader className="" size={10} />
+          ) : (
+            "Submit"
+          )}
+        </Button>
       </form>
     </Form>
   );

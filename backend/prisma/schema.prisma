@@ -66,14 +66,11 @@ model Form {
 }
 
 model FormSubmission {
-  id String @id @default(uuid())
-
+  id     String @id @default(uuid())
   formId String
+  form   Form   @relation(fields: [formId], references: [id], onDelete: Cascade)
 
-  form Form @relation(fields: [formId], references: [id], onDelete: Cascade)
-
-  email       String?
-  name        String?
+  values      String
   submittedAt DateTime @default(now())
 
   @@map("form_submissions")

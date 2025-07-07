@@ -7,12 +7,11 @@ import {
 } from "@/components/ui/card";
 import type { Form } from "@/types/forms";
 import { Link } from "@tanstack/react-router";
-import { Building, Edit2, Trash } from "lucide-react";
+import { Building, Edit2, Eye, Trash } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { ActionsMenu, type MenuItems } from "@/components/actions-menu";
 import { timeDistance } from "@/lib/dayjs";
-
 
 type FormCardProps = {
   form: Form;
@@ -51,15 +50,26 @@ export const FormCard = ({ form }: FormCardProps) => {
           <span>{form.submissions} submissions</span>
         </div>
 
-        <Link
-          className="w-full rounded-md bg-primary text-secondary-foreground text-center py-1 flex items-center gap-2 justify-center"
-          to={`/builder/$formId`}
-          params={{
-            formId: form.id,
-          }}
-        >
-          Build <Building />
-        </Link>
+        <div className="flex items-center gap-2">
+          <Link
+            className="w-full rounded-md bg-secondary text-secondary-foreground text-center py-1 flex items-center gap-2 justify-center"
+            to={`/forms/$formId`}
+            params={{
+              formId: form.id,
+            }}
+          >
+            View Details <Eye />
+          </Link>
+          <Link
+            className="w-full rounded-md bg-primary text-secondary-foreground text-center py-1 flex items-center gap-2 justify-center"
+            to={`/builder/$formId`}
+            params={{
+              formId: form.id,
+            }}
+          >
+            Build <Building />
+          </Link>
+        </div>
       </CardContent>
     </Card>
   );
