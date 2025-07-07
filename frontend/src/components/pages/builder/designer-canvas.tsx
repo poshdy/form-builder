@@ -6,7 +6,7 @@ import {
 import { cn } from "@/lib/utils";
 import { useDndMonitor, useDroppable } from "@dnd-kit/core";
 import cuid from "cuid";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { FaRegTrashAlt } from "react-icons/fa";
 import { DesignerComponent } from "./designer-component";
 import { useBuilderContext } from "@/builder/context/builder-context";
@@ -19,7 +19,7 @@ import {
   arrayMove,
 } from "@dnd-kit/sortable";
 
-const Designer = () => {
+const Designer = ({ fields }: { fields: string }) => {
   const { elements, handleAdd, setActiveElement, activeElement, setElements } =
     useBuilderContext();
   const { setNodeRef, isOver } = useDroppable({
@@ -29,6 +29,13 @@ const Designer = () => {
       isDesignerContainer: true,
     },
   });
+
+  useEffect(() => {
+    if (fields) {
+      const savedElements = JSON.parse(fields) as FormElementInstance[];
+      setElements(savedElements);
+    }
+  }, [fields]);
 
   useDndMonitor({
     onDragEnd(event) {

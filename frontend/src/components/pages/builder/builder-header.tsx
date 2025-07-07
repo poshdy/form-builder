@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import { saveSchema } from "@/schemas/form";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
+import PreviewModal from "./preview-modal";
+import { useState } from "react";
 
 export const BuilderHeader = ({
   formTitle,
@@ -14,6 +16,7 @@ export const BuilderHeader = ({
   id: string;
 }) => {
   const { elements } = useBuilderContext();
+  const [open, setOpen] = useState<boolean>(false);
   const { mutateAsync, isPending } = useMutation({
     mutationFn: async () =>
       await saveForm(id, { fields: JSON.stringify(elements) }),
@@ -26,9 +29,7 @@ export const BuilderHeader = ({
       <h3 className="font-bold text-xl">{formTitle}</h3>
 
       <div className="flex items-center gap-6">
-        <Button size={"sm"} variant={"outline"}>
-          Preview
-        </Button>
+        <PreviewModal open={open} setOpen={setOpen} />
         <div className="flex items-center gap-1">
           <Button
             onClick={async () => {

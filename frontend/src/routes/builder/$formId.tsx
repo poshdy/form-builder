@@ -31,7 +31,7 @@ function RouteComponent() {
       <DndContext sensors={sensors}>
         <div className="flex">
           <div className="w-[70%] p-4">
-            <Designer />
+            <Designer fields={data?.fields} />
           </div>
 
           <div className="w-[30%] border-l border-gray-700">
