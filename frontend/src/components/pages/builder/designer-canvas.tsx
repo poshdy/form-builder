@@ -15,7 +15,6 @@ import { CSS } from "@dnd-kit/utilities";
 import {
   useSortable,
   SortableContext,
-  arrayMove,
   arraySwap,
   rectSwappingStrategy,
 } from "@dnd-kit/sortable";

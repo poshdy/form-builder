@@ -53,19 +53,6 @@ const Hero = () => {
               Watch Demo
             </Button>
           </div>
-
-          {/* Social Proof */}
-          <div className="pt-12 opacity-70">
-            <p className="text-sm text-foreground/60 mb-4">
-              Trusted by companies worldwide
-            </p>
-            <div className="flex items-center justify-center space-x-8 opacity-60">
-              <div className="text-2xl font-bold">Google</div>
-              <div className="text-2xl font-bold">Microsoft</div>
-              <div className="text-2xl font-bold">Shopify</div>
-              <div className="text-2xl font-bold">Stripe</div>
-            </div>
-          </div>
         </div>
 
         {/* Floating Elements */}

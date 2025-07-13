@@ -10,7 +10,7 @@ export const Route = createFileRoute("/")({
 function App() {
   return (
     <div className="min-h-screen bg-background overflow-x-hidden">
-      <Header />
+      <Header page="home" />
       <main>
         <Hero />
         <Features />

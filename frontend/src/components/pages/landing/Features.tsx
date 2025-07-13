@@ -36,13 +36,6 @@ const Features = () => {
       color: "text-aurora-tertiary",
     },
     {
-      icon: BarChart3,
-      title: "Advanced Analytics",
-      description:
-        "Gain insights with detailed reports and conversion tracking.",
-      color: "text-aurora-quaternary",
-    },
-    {
       icon: Smartphone,
       title: "Mobile Optimized",
       description:
@@ -61,13 +54,6 @@ const Features = () => {
       description:
         "Accept payments securely with Stripe integration and PCI compliance.",
       color: "text-aurora-tertiary",
-    },
-    {
-      icon: Users,
-      title: "Team Collaboration",
-      description:
-        "Work together with real-time editing and permission management.",
-      color: "text-aurora-quaternary",
     },
     {
       icon: Workflow,

@@ -1,8 +1,8 @@
 import { getForm, getFormSubmissions } from "@/api/data-access/form";
-import NavigationBar from "@/components/Header";
 import { Loader } from "@/components/Loader";
 import { FormStatsCard } from "@/components/pages/forms/stats-card";
 import { SubmissionModal } from "@/components/pages/forms/submissions.modal";
+import Header from "@/components/pages/landing/Header";
 import {
   Table,
   TableBody,
@@ -47,10 +47,9 @@ function FormDetails() {
     );
   }
 
-  console.log({ data });
   return (
     <div className="min-h-screen  ">
-      <NavigationBar />
+      <Header page="form" />
       <main className="container mx-auto px-6 py-8">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-foreground mb-2">

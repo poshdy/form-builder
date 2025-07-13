@@ -1,10 +1,11 @@
 import { getForms, getFormStats } from "@/api/data-access/form";
-import NavigationBar from "@/components/Header";
+
 import { Loader } from "@/components/Loader";
 import { CreateUpdateFormModal } from "@/components/pages/forms/create-update-modal";
 import { FormCard } from "@/components/pages/forms/form-card";
 import { ModalTrigger } from "@/components/pages/forms/modal-trigger";
 import { FormStatsCard } from "@/components/pages/forms/stats-card";
+import Header from "@/components/pages/landing/Header";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { BarChart3, Eye, MousePointer, Send } from "lucide-react";
@@ -41,7 +42,7 @@ function FormsLayout() {
 
   return (
     <div className="min-h-screen  ">
-      <NavigationBar />
+      <Header page="form" />
       <main className="container mx-auto px-6 py-8">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-foreground mb-2">Forms</h1>
