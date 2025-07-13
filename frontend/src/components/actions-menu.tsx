@@ -29,7 +29,9 @@ export const ActionsMenu = ({
 }: ActionsProps) => {
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger>{trigger}</DropdownMenuTrigger>
+      <DropdownMenuTrigger className="cursor-pointer">
+        {trigger}
+      </DropdownMenuTrigger>
       <DropdownMenuContent className={className}>
         {items.map((item) => (
           <DropdownMenuItem

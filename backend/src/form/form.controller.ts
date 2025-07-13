@@ -15,7 +15,12 @@ import { FormService } from './form.service';
 import { AuthenticationGuard } from 'src/core/auth/guards';
 import { User } from 'src/core/auth/decorators/user.decorator';
 import { UserTokenPayload } from 'src/core/types';
-import { CreateFormDto, SaveFormDto } from './dto';
+import {
+  CreateFormDto,
+  SaveFormDto,
+  UpdateFormDto,
+  updateFormSchema,
+} from './dto';
 import { ZodValidationPipe } from 'nestjs-zod';
 
 @UseGuards(AuthenticationGuard)
@@ -57,7 +62,6 @@ export class FormController {
     @User() user: UserTokenPayload,
     @Param('formId') formId: string,
   ) {
-    console.log({ formId });
     const form = await this.formService.getFormSubmissions({ user, formId });
 
     return {
@@ -71,7 +75,6 @@ export class FormController {
     @User() user: UserTokenPayload,
     @Param('formId') formId: string,
   ) {
-    console.log({ formId });
     const form = await this.formService.getForm({ user, formId });
 
     return {
@@ -94,9 +97,26 @@ export class FormController {
     };
   }
 
+  @UsePipes(ZodValidationPipe)
   @HttpCode(HttpStatus.OK)
   @Patch(':formId')
-  async updateForm(@Param() formId: string, @Body() payload: any) {}
+  async updateForm(
+    @Param('formId') formId: string,
+    @Body() payload: UpdateFormDto,
+  ) {
+    const { description, title } = payload;
+
+    const updated = await this.formService.updateForm({
+      formId,
+
+      description,
+      title,
+    });
+
+    return {
+      data: updated,
+    };
+  }
 
   @HttpCode(HttpStatus.NO_CONTENT)
   @Delete(':formId')

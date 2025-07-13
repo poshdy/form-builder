@@ -116,13 +116,17 @@ export class FormService {
   }
   async updateForm({
     formId,
-    user,
+
     description,
     title,
-  }: FormMutation & CreateFormDto) {
+  }: {
+    formId: string;
+    title: string | undefined;
+    description: string | undefined;
+  }) {
     try {
       return await this.database.form.update({
-        where: { id: formId, accountId: user.accountId },
+        where: { id: formId },
         data: {
           title,
           description,

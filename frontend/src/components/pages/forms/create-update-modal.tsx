@@ -25,7 +25,7 @@ import {
 } from "@/schemas/form";
 import type { Form as FormType } from "@/types/forms";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
@@ -40,6 +40,7 @@ export const CreateUpdateFormModal = ({
   onClose,
   formData,
 }: FormModalProps) => {
+  const querClient = useQueryClient();
   const createMutation = useMutation({
     mutationFn: async (values: FormPayload) => await createForm(values),
   });
@@ -69,7 +70,8 @@ export const CreateUpdateFormModal = ({
           {
             onSuccess() {
               onClose();
-              toast.success("Form Created Successfully!");
+              toast.success("Form Updated Successfully!");
+              querClient.invalidateQueries({ queryKey: ["forms"] });
             },
           }
         );
