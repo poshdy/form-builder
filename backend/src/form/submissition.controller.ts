@@ -4,6 +4,7 @@ import {
   HttpCode,
   HttpStatus,
   Param,
+  Patch,
   Post,
   UsePipes,
 } from '@nestjs/common';
@@ -14,6 +15,12 @@ import { ZodValidationPipe } from 'nestjs-zod';
 @Controller('forms/submission')
 export class SubmissionController {
   constructor(private readonly formService: FormService) {}
+
+  @HttpCode(HttpStatus.OK)
+  @Patch(':formId/visit')
+  async visitForm(@Param('formId') formId: string) {
+    return await this.formService.formVisit(formId);
+  }
 
   @UsePipes(ZodValidationPipe)
   @HttpCode(HttpStatus.CREATED)

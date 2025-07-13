@@ -64,6 +64,12 @@ export function FormComponent({
         {
           onSuccess() {
             // redirect to success page
+            window.localStorage.removeItem(formId);
+
+            window.localStorage.setItem(
+              formId,
+              JSON.stringify({ viewed: true, submitted: true })
+            );
             toast.success("Form Submitted Successfully!✅");
           },
         }

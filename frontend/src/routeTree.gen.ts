@@ -13,6 +13,7 @@
 import { Route as rootRoute } from './routes/__root'
 import { Route as IndexImport } from './routes/index'
 import { Route as FormsIndexImport } from './routes/forms/index'
+import { Route as SubmissionAlreadySubmittedImport } from './routes/submission/already-submitted'
 import { Route as SubmissionFormIdImport } from './routes/submission/$formId'
 import { Route as FormsFormIdImport } from './routes/forms/$formId'
 import { Route as BuilderFormIdImport } from './routes/builder/$formId'
@@ -32,6 +33,14 @@ const FormsIndexRoute = FormsIndexImport.update({
   path: '/forms/',
   getParentRoute: () => rootRoute,
 } as any)
+
+const SubmissionAlreadySubmittedRoute = SubmissionAlreadySubmittedImport.update(
+  {
+    id: '/submission/already-submitted',
+    path: '/submission/already-submitted',
+    getParentRoute: () => rootRoute,
+  } as any,
+)
 
 const SubmissionFormIdRoute = SubmissionFormIdImport.update({
   id: '/submission/$formId',
@@ -109,6 +118,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SubmissionFormIdImport
       parentRoute: typeof rootRoute
     }
+    '/submission/already-submitted': {
+      id: '/submission/already-submitted'
+      path: '/submission/already-submitted'
+      fullPath: '/submission/already-submitted'
+      preLoaderRoute: typeof SubmissionAlreadySubmittedImport
+      parentRoute: typeof rootRoute
+    }
     '/forms/': {
       id: '/forms/'
       path: '/forms'
@@ -128,6 +144,7 @@ export interface FileRoutesByFullPath {
   '/builder/$formId': typeof BuilderFormIdRoute
   '/forms/$formId': typeof FormsFormIdRoute
   '/submission/$formId': typeof SubmissionFormIdRoute
+  '/submission/already-submitted': typeof SubmissionAlreadySubmittedRoute
   '/forms': typeof FormsIndexRoute
 }
 
@@ -138,6 +155,7 @@ export interface FileRoutesByTo {
   '/builder/$formId': typeof BuilderFormIdRoute
   '/forms/$formId': typeof FormsFormIdRoute
   '/submission/$formId': typeof SubmissionFormIdRoute
+  '/submission/already-submitted': typeof SubmissionAlreadySubmittedRoute
   '/forms': typeof FormsIndexRoute
 }
 
@@ -149,6 +167,7 @@ export interface FileRoutesById {
   '/builder/$formId': typeof BuilderFormIdRoute
   '/forms/$formId': typeof FormsFormIdRoute
   '/submission/$formId': typeof SubmissionFormIdRoute
+  '/submission/already-submitted': typeof SubmissionAlreadySubmittedRoute
   '/forms/': typeof FormsIndexRoute
 }
 
@@ -161,6 +180,7 @@ export interface FileRouteTypes {
     | '/builder/$formId'
     | '/forms/$formId'
     | '/submission/$formId'
+    | '/submission/already-submitted'
     | '/forms'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -170,6 +190,7 @@ export interface FileRouteTypes {
     | '/builder/$formId'
     | '/forms/$formId'
     | '/submission/$formId'
+    | '/submission/already-submitted'
     | '/forms'
   id:
     | '__root__'
@@ -179,6 +200,7 @@ export interface FileRouteTypes {
     | '/builder/$formId'
     | '/forms/$formId'
     | '/submission/$formId'
+    | '/submission/already-submitted'
     | '/forms/'
   fileRoutesById: FileRoutesById
 }
@@ -190,6 +212,7 @@ export interface RootRouteChildren {
   BuilderFormIdRoute: typeof BuilderFormIdRoute
   FormsFormIdRoute: typeof FormsFormIdRoute
   SubmissionFormIdRoute: typeof SubmissionFormIdRoute
+  SubmissionAlreadySubmittedRoute: typeof SubmissionAlreadySubmittedRoute
   FormsIndexRoute: typeof FormsIndexRoute
 }
 
@@ -200,6 +223,7 @@ const rootRouteChildren: RootRouteChildren = {
   BuilderFormIdRoute: BuilderFormIdRoute,
   FormsFormIdRoute: FormsFormIdRoute,
   SubmissionFormIdRoute: SubmissionFormIdRoute,
+  SubmissionAlreadySubmittedRoute: SubmissionAlreadySubmittedRoute,
   FormsIndexRoute: FormsIndexRoute,
 }
 
@@ -219,6 +243,7 @@ export const routeTree = rootRoute
         "/builder/$formId",
         "/forms/$formId",
         "/submission/$formId",
+        "/submission/already-submitted",
         "/forms/"
       ]
     },
@@ -239,6 +264,9 @@ export const routeTree = rootRoute
     },
     "/submission/$formId": {
       "filePath": "submission/$formId.tsx"
+    },
+    "/submission/already-submitted": {
+      "filePath": "submission/already-submitted.tsx"
     },
     "/forms/": {
       "filePath": "forms/index.tsx"

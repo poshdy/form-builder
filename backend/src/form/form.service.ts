@@ -104,11 +104,17 @@ export class FormService {
   }
   async submitForm({ values, formId }: { formId: string; values: string }) {
     try {
-      return await this.database.formSubmission.create({
-        data: {
-          values,
-          formId,
-        },
+      return await this.database.$transaction(async (tx) => {
+        await tx.formSubmission.create({
+          data: {
+            values,
+            formId,
+          },
+        });
+        await tx.form.update({
+          where: { id: formId },
+          data: { submissions: { increment: 1 } },
+        });
       });
     } catch (error) {
       this.logger.error({ error });
@@ -176,6 +182,17 @@ export class FormService {
         submissions,
         visits,
       };
+    } catch (error) {
+      this.logger.error({ error });
+    }
+  }
+
+  async formVisit(formId: string) {
+    try {
+      return await this.database.form.update({
+        where: { id: formId },
+        data: { visits: { increment: 1 } },
+      });
     } catch (error) {
       this.logger.error({ error });
     }

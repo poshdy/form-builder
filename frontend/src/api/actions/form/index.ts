@@ -46,3 +46,13 @@ export const submitForm = async (id: string, values: string) => {
     console.error({ error });
   }
 };
+export const viewForm = async (id: string) => {
+  try {
+    const response = await axios.patch(
+      `${appConfig.apiBaseUrl}/forms/submission/${id}/visit`
+    );
+    return response.data;
+  } catch (error) {
+    console.error({ error });
+  }
+};
