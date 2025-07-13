@@ -24,6 +24,7 @@ function RouteComponent() {
 
   const sensors = useSensors(mouseSensor);
 
+  if (!data) return;
   return (
     <div className="min-h-screen bg-black flex-col">
       <BuilderHeader id={data?.id} formTitle={data?.title} />

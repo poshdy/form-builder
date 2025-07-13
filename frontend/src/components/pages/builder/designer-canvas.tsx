@@ -15,8 +15,9 @@ import { CSS } from "@dnd-kit/utilities";
 import {
   useSortable,
   SortableContext,
-  verticalListSortingStrategy,
   arrayMove,
+  arraySwap,
+  rectSwappingStrategy,
 } from "@dnd-kit/sortable";
 
 const Designer = ({ fields }: { fields: string }) => {
@@ -49,30 +50,29 @@ const Designer = ({ fields }: { fields: string }) => {
       if (isDesignerElement && over?.isDesignerContainer && !data?.sortable) {
         handleAdd(elements.length, newElement);
       }
+
       if (data?.sortable) {
-        const oldId = event.active?.id as string;
-        const overId = over?.id as string;
+        const oldId = event.active.id;
+        const newId = event.over?.id;
 
-        setElements((prev) => {
-          const oldIndex = elements.findIndex((element) => element.id == oldId);
-          const overIndex = elements.findIndex(
-            (element) => element.id == overId
-          );
+        const oldIndex = elements.findIndex((element) => element.id == oldId);
+        const overIndex = elements.findIndex((element) => element.id == newId);
 
-          return arrayMove(prev, oldIndex, overIndex);
-        });
+        const newItems = arraySwap(elements, oldIndex, overIndex);
+
+        setElements(newItems);
       }
 
       const isDroppingBetweenElements =
         over?.isTopElement || over?.isBottomElement;
 
-      if (!data?.sortable && isDroppingBetweenElements) {
-        const itemId = over?.id;
+      if (isDroppingBetweenElements) {
+        const itemId = event.over?.data?.current?.id;
         const itemPosition = elements.findIndex(
           (element) => element.id === itemId
         );
         handleAdd(
-          over?.isTopElement ? itemPosition + 1 : itemPosition,
+          over?.isTopElement ? itemPosition : itemPosition + 1,
           newElement
         );
       }
@@ -108,10 +108,7 @@ const Designer = ({ fields }: { fields: string }) => {
       )}
 
       {elements.length && (
-        <SortableContext
-          items={elements}
-          strategy={verticalListSortingStrategy}
-        >
+        <SortableContext items={elements} strategy={rectSwappingStrategy}>
           <div ref={elementCardRef} className="flex flex-col w-full gap-2">
             {elements.map((element) => (
               <DesignerComponentWrapper element={element} key={element.id} />
