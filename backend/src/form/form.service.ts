@@ -43,9 +43,49 @@ export class FormService {
   }
   async getForm({ user, formId }: FormMutation) {
     try {
-      return await this.database.form.findUnique({
+      const form = await this.database.form.findUnique({
         where: { id: formId },
       });
+
+      const visits = form.visits ?? 0;
+      const submissions = form.submissions ?? 0;
+      const { submissionRate, bounceRate } = await this.calculateFormStats({
+        submissions,
+        visits,
+      });
+
+      return {
+        ...form,
+        submissions,
+        visits,
+        submissionRate,
+        bounceRate,
+      };
+    } catch (error) {
+      this.logger.error({ error });
+    }
+  }
+  async getFormSubmissions({ user, formId }: FormMutation) {
+    try {
+      const form = await this.database.formSubmission.findMany({
+        where: { formId: formId },
+      });
+
+      const submissions = form.map((submission) => {
+        const { submittedAt, values } = submission;
+
+        const parsedValues = JSON.parse(values) as {
+          question: string;
+          answer: string;
+          type: string;
+        }[];
+        return {
+          values: parsedValues,
+          submittedAt,
+        };
+      });
+
+      return submissions;
     } catch (error) {
       this.logger.error({ error });
     }
@@ -121,14 +161,38 @@ export class FormService {
       const submissions = stats._sum.submissions ?? 0;
       const visits = stats._sum.visits ?? 0;
 
-      const submissionRate = (submissions / visits) * 100;
-      const bounceRate = 100 - submissionRate;
+      const { submissionRate, bounceRate } = await this.calculateFormStats({
+        submissions,
+        visits,
+      });
 
       return {
         submissionRate: isNaN(submissionRate) ? 0 : submissionRate,
         bounceRate: isNaN(bounceRate) ? 0 : bounceRate,
         submissions,
         visits,
+      };
+    } catch (error) {
+      this.logger.error({ error });
+    }
+  }
+
+  private async calculateFormStats({
+    submissions,
+    visits,
+  }: {
+    submissions: number;
+    visits: number;
+  }) {
+    try {
+      const submissionRate = (submissions / visits) * 100;
+      const bounceRate = 100 - submissionRate;
+
+      return {
+        submissions,
+        visits,
+        submissionRate,
+        bounceRate,
       };
     } catch (error) {
       this.logger.error({ error });

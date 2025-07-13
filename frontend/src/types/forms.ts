@@ -1,3 +1,5 @@
+import type { FormElementType } from "@/builder/FormElements";
+
 export type FormStatsWithRate = {
   submissionRate: number;
   bounceRate: number;
@@ -20,3 +22,14 @@ export type Form = {
 
   fields: string;
 } & FormStats;
+export type FormSubmission = {
+  submittedAt: Date;
+
+  values: SubmissionValues[];
+};
+
+export type SubmissionValues = {
+  question: string;
+  type: FormElementType;
+  answer: string;
+};

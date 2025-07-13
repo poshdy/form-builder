@@ -52,6 +52,20 @@ export class FormController {
   }
 
   @HttpCode(HttpStatus.OK)
+  @Get(':formId/submissions')
+  async getFormSubmissions(
+    @User() user: UserTokenPayload,
+    @Param('formId') formId: string,
+  ) {
+    console.log({ formId });
+    const form = await this.formService.getFormSubmissions({ user, formId });
+
+    return {
+      data: form,
+    };
+  }
+
+  @HttpCode(HttpStatus.OK)
   @Get(':formId')
   async getForm(
     @User() user: UserTokenPayload,

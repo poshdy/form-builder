@@ -1,5 +1,5 @@
 import { apiCall } from "@/api";
-import type { Form, FormStatsWithRate } from "@/types/forms";
+import type { Form, FormStatsWithRate, FormSubmission } from "@/types/forms";
 
 export const getForms = async () => {
   try {
@@ -13,7 +13,20 @@ export const getForms = async () => {
 
 export const getForm = async (formId: string) => {
   try {
-    const response = await apiCall.get<{ data: Form }>(`/forms/${formId}`);
+    const response = await apiCall.get<{
+      data: Form & { submissionRate: number; bounceRate: number };
+    }>(`/forms/${formId}`);
+
+    return response.data.data;
+  } catch (error) {
+    console.error({ error });
+  }
+};
+export const getFormSubmissions = async (formId: string) => {
+  try {
+    const response = await apiCall.get<{
+      data: FormSubmission[];
+    }>(`/forms/${formId}/submissions`);
 
     return response.data.data;
   } catch (error) {

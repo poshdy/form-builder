@@ -94,7 +94,7 @@ const Designer = ({ fields }: { fields: string }) => {
   return (
     <div
       className={cn(
-        "p-2 flex flex-col border-2 border-dashed border-secondary  h-full rounded-xl ease-in-out",
+        "p-2 flex flex-col border-2 border-dashed border-secondary  min-h-[120vh] overflow-y-scroll  h-[120vh] rounded-xl ease-in-out hide",
 
         isOver && "border-primary"
       )}
@@ -178,7 +178,7 @@ function DesignerComponentWrapper({
       {...listeners}
       {...attributes}
       className={cn(
-        "group relative flex overflow-clip flex-col items-center justify-center rounded-md bg-secondary/70 text-muted-foreground h-[120px]"
+        "group relative flex overflow-clip flex-col items-center justify-center rounded-md bg-secondary/70 text-muted-foreground h-[100px]"
       )}
     >
       <div

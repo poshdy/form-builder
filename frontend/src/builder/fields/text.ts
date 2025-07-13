@@ -3,7 +3,6 @@ import {
   type FormElement,
   type FormElementType,
 } from "@/builder/FormElements";
-import { FormComponent } from "@/components/pages/builder/form-component";
 
 import { MdOutlineTextFields } from "react-icons/md";
 
@@ -16,7 +15,6 @@ export const TextElementField: FormElement = {
     extraAttributes: { ...defaultExtraAttributes, label: "Text Input" },
   }),
   type,
-  formComponent: FormComponent,
   controlBtn: {
     icon: MdOutlineTextFields,
     label: "Text Field",

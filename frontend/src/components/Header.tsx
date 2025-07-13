@@ -1,8 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { Link } from "@tanstack/react-router";
 import { Plus, Settings, User } from "lucide-react";
+import { CreateUpdateFormModal } from "./pages/forms/create-update-modal";
+import { useState } from "react";
 
 const NavigationBar = () => {
+  const [open, setOpen] = useState<boolean>(false);
   return (
     <nav className="border-b border-border bg-card/50 backdrop-blur supports-[backdrop-filter]:bg-card/50">
       <div className="container mx-auto px-6 py-4">
@@ -45,7 +48,12 @@ const NavigationBar = () => {
           </div>
 
           <div className="flex items-center space-x-4">
-            <Button variant="default" size="sm" className="gap-2">
+            <Button
+              onClick={() => setOpen(true)}
+              variant="default"
+              size="sm"
+              className="gap-2 cursor-pointer"
+            >
               <Plus className="h-4 w-4" />
               New Form
             </Button>
@@ -57,12 +65,13 @@ const NavigationBar = () => {
             <Button variant="ghost" size="sm">
               <User className="h-4 w-4" />
             </Button>
-            <Button variant="ghost" size="sm">
-              <User className="h-4 w-4" />
-            </Button>
           </div>
         </div>
       </div>
+
+      {open && (
+        <CreateUpdateFormModal onClose={() => setOpen(false)} open={open} />
+      )}
     </nav>
   );
 };

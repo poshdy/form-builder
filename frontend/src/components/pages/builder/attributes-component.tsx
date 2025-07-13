@@ -68,7 +68,7 @@ export function AttributesComponent({
             control={form.control}
             render={({ field }) => (
               <FormItem className="text-xs">
-                <FormLabel>Label</FormLabel>
+                <FormLabel className="text-white">Label</FormLabel>
                 <FormControl>
                   <Input
                     onKeyDown={(e) => {
@@ -89,7 +89,7 @@ export function AttributesComponent({
             control={form.control}
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Placeholder</FormLabel>
+                <FormLabel className="text-white">Placeholder</FormLabel>
                 <FormControl>
                   <Input
                     onKeyDown={(e) => {
@@ -109,7 +109,7 @@ export function AttributesComponent({
             control={form.control}
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Description</FormLabel>
+                <FormLabel className="text-white">Description</FormLabel>
                 <FormControl>
                   <Textarea
                     onKeyDown={(e) => {
@@ -128,19 +128,19 @@ export function AttributesComponent({
             name="required"
             control={form.control}
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="border border-accent rounded-md px-4 py-3 flex justify-between items-start">
                 <div className="flex flex-col items-start gap-1">
-                  <FormLabel>Required</FormLabel>
-                  <p className="text-xs text-accent">
+                  <FormLabel className="text-white">Required</FormLabel>
+                  <p className="text-xs ">
                     this field determines whether this field is optional or not
                   </p>
-                  <FormControl>
-                    <Switch
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                    />
-                  </FormControl>
                 </div>
+                <FormControl>
+                  <Switch
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
+                </FormControl>
               </FormItem>
             )}
           />

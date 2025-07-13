@@ -10,7 +10,7 @@ import { createFileRoute, redirect } from "@tanstack/react-router";
 import { BarChart3, Eye, MousePointer, Send } from "lucide-react";
 import { useState } from "react";
 
-export const Route = createFileRoute("/forms")({
+export const Route = createFileRoute("/forms/")({
   beforeLoad(ctx) {
     if (!ctx.context.auth?.user) {
       console.log({ user: ctx.context.auth?.user });

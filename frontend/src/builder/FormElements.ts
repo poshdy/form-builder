@@ -1,7 +1,13 @@
 import { NumberElementField } from "./fields/number";
+import { EmailElementField } from "./fields/presets/email";
+import { NameElementField } from "./fields/presets/name";
 import { TextElementField } from "./fields/text";
 
-export type FormElementType = "TextField" | "NumberField";
+export type FormElementType =
+  | "TextField"
+  | "NumberField"
+  | "EmailField"
+  | "NameField";
 
 export type FormElementInstance = {
   id: string;
@@ -11,7 +17,7 @@ export type FormElementInstance = {
 
 export type FormElement = {
   type: FormElementType;
-  formComponent: React.FC;
+  // formComponent: React.FC;
   constructor: (id: string) => FormElementInstance;
   controlBtn: {
     icon: React.ElementType;
@@ -26,6 +32,8 @@ type FormElements = {
 export const FormElements: FormElements = {
   TextField: TextElementField,
   NumberField: NumberElementField,
+  EmailField: EmailElementField,
+  NameField: NameElementField,
 };
 
 export const defaultExtraAttributes = {

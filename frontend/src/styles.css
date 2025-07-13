@@ -133,3 +133,10 @@ code {
     @apply bg-background text-foreground;
   }
 }
+
+.hide::-webkit-scrollbar {
+  display: none;
+}
+html::-webkit-scrollbar {
+  display: none;
+}
