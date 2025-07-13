@@ -53,7 +53,7 @@ function RouteComponent() {
   }
 
   return (
-    <main className="flex flex-col md:w-[60%] w-[85%] mx-auto gap-3">
+    <main className="flex flex-col md:w-[60%] w-[85%] mx-auto gap-3 py-5">
       <div className="py-4">
         <h1 className="font-semibold text-2xl">{form.data.title}</h1>
         {form.data.description && (

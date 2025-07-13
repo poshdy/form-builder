@@ -36,7 +36,6 @@ export class AuthController {
   ) {
     const res = await this.authService.signUp(payload);
 
-    console.log({ access: res.accessToken, refresh: res.refreshToken });
     response.cookie('access-token', res.accessToken, this.cookieOptions);
     response.cookie('refresh-token', res.refreshToken, this.cookieOptions);
 
@@ -53,7 +52,6 @@ export class AuthController {
   ) {
     const res = await this.authService.login(payload);
 
-    console.log({ access: res.accessToken, refresh: res.refreshToken });
     response.cookie('access-token', res.accessToken, this.cookieOptions);
     response.cookie('refresh-token', res.refreshToken, this.cookieOptions);
 

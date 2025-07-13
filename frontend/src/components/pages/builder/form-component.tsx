@@ -74,8 +74,6 @@ export function FormComponent({
           },
         }
       );
-
-      console.log({ message: "Form submitted successfully!" });
     } else {
       console.log({ values });
       console.log({ message: "Form submitted successfully!" });
@@ -85,37 +83,9 @@ export function FormComponent({
   return (
     <Form {...form}>
       <form
-        className="flex flex-col gap-4"
+        className="flex flex-col gap-6"
         onSubmit={form.handleSubmit(handleSubmit)}
       >
-        <FormField
-          name={"name"}
-          control={form.control}
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Name</FormLabel>
-
-              <FormControl>
-                <Input {...field} type={"text"} placeholder={"your name"} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          name={"email"}
-          control={form.control}
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Email</FormLabel>
-
-              <FormControl>
-                <Input {...field} type={"email"} placeholder={"your email"} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
         {elements.map(
           ({
             id,

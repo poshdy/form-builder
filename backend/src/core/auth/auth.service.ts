@@ -18,32 +18,25 @@ export class AuthService {
     private readonly authUtils: AuthUtils,
   ) {}
   async signUp(payload: signUpPayload) {
-    // check if the email is exits in database
-
     const account = await this.accountService.getOne(payload.email);
 
-    console.log('account', account);
-    // if yes throw an error and inform the user with a descriptive message
     if (account) {
       throw new BadRequestException('this email is taken try another one');
     }
-    // // create user record in db
+
     const { firstName, lastName, email, password } = payload;
     const user = await this.userService.createUser({
       firstName,
       lastName,
     });
-    console.log('user', user);
-    // // hash user's password
 
     const hashedPassword = await this.authUtils.hash(password);
-    // create account record in db
+
     const acc = await this.accountService.createAccount({
       userId: user.id,
       email,
       hashedPassword,
     });
-    // // generate access, and refresh tokens
 
     const tokenPayload = {
       email,
@@ -56,7 +49,6 @@ export class AuthService {
     ]);
 
     await this.accountService.refreshTokenAction('update', email, refreshToken);
-    // // return user data along with user data
 
     const { createdAt, ...userRest } = user;
     const { password: pass, provider, refreshToken: token, ...rest } = acc;
@@ -135,14 +127,10 @@ export class AuthService {
       ...rest,
     };
 
-    console.log('token', tokenPayload);
-    console.log('before new tokens');
-
     const tokens = await Promise.all([
       this.authUtils.generateToken(tokenPayload, '10m'),
       this.authUtils.generateToken(tokenPayload, '7d'),
     ]);
-    console.log('before new tokens');
 
     await this.accountService.refreshTokenAction(
       'update',
