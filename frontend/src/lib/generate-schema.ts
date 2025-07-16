@@ -8,7 +8,11 @@ export function generateSchema(elements: CustomElementInstance[]) {
 
   elements.forEach((element) => {
     const validation =
-      element.type == "NumberField" ? z.coerce.number() : z.string();
+      element.type == "NumberField"
+        ? z.coerce.number()
+        : element.type == "MultiChoice"
+          ? z.string().array()
+          : z.string();
     const label = element.extraAttributes.label;
 
     const field = {

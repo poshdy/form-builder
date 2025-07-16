@@ -1,7 +1,9 @@
+import type React from "react";
 import { NumberElementField } from "./fields/number";
 import { EmailElementField } from "./fields/presets/email";
 import { NameElementField } from "./fields/presets/name";
 import { TextElementField } from "./fields/text";
+import type { ZodObject } from "zod";
 
 export type FormElementType =
   | "TextField"
@@ -17,12 +19,23 @@ export type FormElementInstance = {
 
 export type FormElement = {
   type: FormElementType;
-  // formComponent: React.FC;
   constructor: (id: string) => FormElementInstance;
+  attributesComponent: React.FC<{ elementInstance: FormElementInstance }>;
+  formComponent: React.FC<{
+    elementInstance: FormElementInstance;
+    submitValue: ({ key, value }: { key: string; value: string }) => void;
+  }>;
+
+  builderComponent: React.FC<{ elementInstance: FormElementInstance }>;
   controlBtn: {
     icon: React.ElementType;
     label: string;
   };
+
+  // validate: (
+  //   schema: ZodObject<any>,
+  //   value: string
+  // ) => { error: string | null; isValid: boolean };
 };
 
 type FormElements = {
@@ -46,5 +59,9 @@ export const defaultExtraAttributes = {
 export type BaseAttributes = typeof defaultExtraAttributes;
 
 export type CustomElementInstance = FormElementInstance & {
+  extraAttributes: BaseAttributes;
+};
+
+export type ChoiceElementInstance = FormElementInstance & {
   extraAttributes: BaseAttributes;
 };

@@ -8,7 +8,6 @@ import { useDndMonitor, useDroppable } from "@dnd-kit/core";
 import cuid from "cuid";
 import { useEffect, useRef } from "react";
 import { FaRegTrashAlt } from "react-icons/fa";
-import { DesignerComponent } from "./designer-component";
 import { useBuilderContext } from "@/builder/context/builder-context";
 
 import { CSS } from "@dnd-kit/utilities";
@@ -213,7 +212,7 @@ function DesignerComponentWrapper({
           isDragging && "border rounded-md border-primary"
         )}
       >
-        <DesignerComponent elementInstance={element} />
+        <BuilderComponentWrapper elementInstance={element} />
       </div>
       <div
         ref={bottomElement.setNodeRef}
@@ -225,3 +224,14 @@ function DesignerComponentWrapper({
     </div>
   );
 }
+
+const BuilderComponentWrapper = ({
+  elementInstance,
+}: {
+  elementInstance: FormElementInstance;
+}) => {
+  const FormBuilderElement =
+    FormElements[elementInstance.type]?.builderComponent;
+
+  return <FormBuilderElement elementInstance={elementInstance} />;
+};

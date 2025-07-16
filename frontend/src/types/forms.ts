@@ -1,4 +1,7 @@
-import type { FormElementType } from "@/builder/FormElements";
+import type {
+  FormElementInstance,
+  FormElementType,
+} from "@/builder/FormElements";
 
 export type FormStatsWithRate = {
   submissionRate: number;
@@ -32,4 +35,12 @@ export type SubmissionValues = {
   question: string;
   type: FormElementType;
   answer: string;
+};
+
+export type ElementInstanceProps = {
+  elementInstance: FormElementInstance;
+};
+
+export type SubmitValue = {
+  submitValue: ({ key, value }: { key: string; value: string }) => void;
 };

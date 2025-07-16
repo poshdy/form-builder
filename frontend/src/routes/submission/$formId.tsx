@@ -1,11 +1,17 @@
-import { viewForm } from "@/api/actions/form";
+import { submitForm, viewForm } from "@/api/actions/form";
 import { getForm } from "@/api/data-access/form";
-import type { CustomElementInstance } from "@/builder/FormElements";
+import {
+  FormElements,
+  type CustomElementInstance,
+  type FormElementInstance,
+} from "@/builder/FormElements";
 import { Loader } from "@/components/Loader";
 import { FormComponent } from "@/components/pages/builder/form-component";
+import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, notFound, redirect } from "@tanstack/react-router";
+import { useRef } from "react";
 
 export const Route = createFileRoute("/submission/$formId")({
   component: RouteComponent,
@@ -42,6 +48,7 @@ function RouteComponent() {
     queryFn: async () => await getForm(formId),
   });
 
+  const formValues = useRef<{ [key: string]: string }>({});
   if (form.isLoading || form.isPending) {
     return (
       <Loader className="h-screen flex items-center justify-center" size={25} />
@@ -51,6 +58,15 @@ function RouteComponent() {
   if (!form.data) {
     return notFound();
   }
+
+  const submitValue = ({ key, value }: { key: string; value: string }) => {
+    formValues.current[key] = value;
+  };
+  const submit = () => {
+    console.log({ values: formValues.current });
+  };
+
+  const fields = JSON.parse(form.data.fields) as CustomElementInstance[];
 
   return (
     <main className="flex flex-col md:w-[60%] w-[85%] mx-auto gap-3 py-5">
@@ -64,13 +80,27 @@ function RouteComponent() {
       </div>
       <Separator />
 
-      <div className="w-full">
-        <FormComponent
-          formId={form.data.id}
-          isPreview={false}
-          elements={JSON.parse(form.data.fields) as CustomElementInstance[]}
-        />
+      <div className="w-full space-y-2">
+        {fields.map((element) => {
+          const FormElementComponent = FormElements[element.type].formComponent;
+
+          return (
+            <FormElementComponent
+              // validateField={validateField}
+              submitValue={submitValue}
+              elementInstance={element}
+            />
+          );
+        })}
       </div>
+      <Button
+        onClick={submit}
+        className="w-full"
+        type="button"
+        variant={"default"}
+      >
+        Submit
+      </Button>
     </main>
   );
 }

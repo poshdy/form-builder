@@ -1,7 +1,6 @@
 import { FormElements, type FormElementInstance } from "@/builder/FormElements";
 import { ControlItem } from "./controlItem";
 
-import { AttributesComponent } from "./attributes-component";
 import { useBuilderContext } from "@/builder/context/builder-context";
 import { Separator } from "@/components/ui/separator";
 
@@ -20,7 +19,6 @@ export const Controlsbar = () => {
               <div className="flex flex-col items-start gap-2">
                 <ControlItem formElement={FormElements.EmailField} />
                 <ControlItem formElement={FormElements.NameField} />
-                {/* <ControlItem formElement={FormElements.TextField} /> */}
               </div>
             </div>
 
@@ -30,6 +28,7 @@ export const Controlsbar = () => {
               <div className="flex flex-col items-start gap-2">
                 <ControlItem formElement={FormElements.NumberField} />
                 <ControlItem formElement={FormElements.TextField} />
+                {/* <ControlItem formElement={FormElements.MultiChoice} /> */}
               </div>
             </div>
           </section>
@@ -44,5 +43,7 @@ const ElementAttributeWrapper = ({
 }: {
   elementInstance: FormElementInstance;
 }) => {
-  return <AttributesComponent elementInstance={elementInstance} />;
+  const FormElementAttributes =
+    FormElements[elementInstance.type].attributesComponent;
+  return <FormElementAttributes elementInstance={elementInstance} />;
 };

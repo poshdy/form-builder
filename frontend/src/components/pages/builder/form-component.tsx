@@ -12,6 +12,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { generateSchema, type SubmitFormValues } from "@/lib/generate-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
@@ -21,7 +22,7 @@ import { toast } from "sonner";
 type FormComponentProps = {
   elements: CustomElementInstance[];
   isPreview: boolean;
-  formId: string;
+  formId?: string;
 };
 
 export function FormComponent({
@@ -40,7 +41,7 @@ export function FormComponent({
   });
 
   const handleSubmit = async (values: SubmitFormValues) => {
-    if (!isPreview) {
+    if (!isPreview && formId) {
       const valuesArr = Object.entries(values);
 
       const submissions = valuesArr.map(([key, value]) => {
@@ -80,6 +81,8 @@ export function FormComponent({
     }
   };
 
+  console.log({ errors: form.formState.errors });
+
   return (
     <Form {...form}>
       <form
@@ -90,6 +93,7 @@ export function FormComponent({
           ({
             id,
             type,
+
             extraAttributes: { description, label, placeholder, required },
           }) => (
             <FormField
@@ -101,7 +105,6 @@ export function FormComponent({
                   <FormLabel>
                     {label} {required && "*"}
                   </FormLabel>
-
                   <FormControl>
                     <Input
                       {...field}
@@ -109,8 +112,6 @@ export function FormComponent({
                       placeholder={placeholder}
                     />
                   </FormControl>
-                  <FormMessage />
-
                   {description && (
                     <FormDescription className="">
                       {description}
