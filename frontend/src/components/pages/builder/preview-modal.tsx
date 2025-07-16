@@ -11,7 +11,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { FormComponent } from "./form-component";
 
 type PreviewModalProps = {
   open: boolean;
@@ -47,10 +46,5 @@ const FormPreviewWrapper = ({
 }: {
   elements: FormElementInstance[];
 }) => {
-  return (
-    <FormComponent
-      elements={elements as CustomElementInstance[]}
-      isPreview={true}
-    />
-  );
+  return <></>;
 };

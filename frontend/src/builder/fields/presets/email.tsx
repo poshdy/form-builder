@@ -88,7 +88,7 @@ const EmailFormComponent = ({
 
   const handleSubmit = (values: NumberInputValue) => {
     console.log({ values });
-    submitValue({ key: elementInstance.id, value: values.value ?? "" });
+    submitValue({ key: label, value: values.value ?? "", type });
   };
 
   console.log({ errors: form.formState.errors });

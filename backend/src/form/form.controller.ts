@@ -75,7 +75,7 @@ export class FormController {
     @User() user: UserTokenPayload,
     @Param('formId') formId: string,
   ) {
-    const form = await this.formService.getForm({ user, formId });
+    const form = await this.formService.getForm({ formId });
 
     return {
       data: form,

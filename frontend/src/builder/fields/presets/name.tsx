@@ -253,14 +253,15 @@ const NameFormComponent = ({
   const buttonRef = useRef<HTMLButtonElement | null>(null);
   const handleSubmit = (values: NumberInputValue) => {
     submitValue({
-      key: elementInstance.id,
+      key: label,
       value: `${values?.firstName}  ${values?.lastName}`,
+      type,
     });
   };
   return (
     <Form {...form}>
       <form
-        className="space-y-2"
+        className="space-y-3"
         onBlur={(e) => {
           e.stopPropagation();
           buttonRef.current?.click();
@@ -276,8 +277,6 @@ const NameFormComponent = ({
             control={form.control}
             render={({ field }) => (
               <FormItem>
-                <FormLabel>{firstNameLabel}</FormLabel>
-
                 <FormControl>
                   <Input
                     onKeyUp={(e) => {
@@ -291,6 +290,9 @@ const NameFormComponent = ({
                     {...field}
                   />
                 </FormControl>
+                <FormLabel className="text-xs text-muted-foreground">
+                  {firstNameLabel}
+                </FormLabel>
 
                 <FormMessage />
               </FormItem>
@@ -301,8 +303,6 @@ const NameFormComponent = ({
             control={form.control}
             render={({ field }) => (
               <FormItem>
-                <FormLabel>{lastNameLabel}</FormLabel>
-
                 <FormControl>
                   <Input
                     onKeyUp={(e) => {
@@ -316,6 +316,9 @@ const NameFormComponent = ({
                     {...field}
                   />
                 </FormControl>
+                <FormLabel className="text-xs text-muted-foreground">
+                  {lastNameLabel}
+                </FormLabel>
 
                 <FormMessage />
               </FormItem>

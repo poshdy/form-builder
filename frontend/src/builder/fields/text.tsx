@@ -33,17 +33,6 @@ import { useRef } from "react";
 const type: FormElementType = "TextField";
 
 export const TextElementField: FormElement = {
-  // validate(schema, value) {
-  //   const parsed = schema.safeParse({ value });
-  //   if (parsed.success) {
-  //     return {
-  //       isValid: true,
-  //       error: null,
-  //     };
-  //   }
-
-  //   return { isValid: false, error: parsed.error.message };
-  // },
   constructor: (id) => ({
     id,
     type,
@@ -257,7 +246,7 @@ const TextFormComponent = ({
   });
   const buttonRef = useRef<HTMLButtonElement | null>(null);
   const handleSubmit = (values: TextInputValue) => {
-    submitValue({ key: elementInstance.id, value: values.value ?? "" });
+    submitValue({ key: label, value: values.value ?? "", type });
   };
   return (
     <Form {...form}>

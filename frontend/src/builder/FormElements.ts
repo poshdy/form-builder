@@ -3,13 +3,14 @@ import { NumberElementField } from "./fields/number";
 import { EmailElementField } from "./fields/presets/email";
 import { NameElementField } from "./fields/presets/name";
 import { TextElementField } from "./fields/text";
-import type { ZodObject } from "zod";
+import { DateElementField } from "./fields/date";
 
 export type FormElementType =
   | "TextField"
   | "NumberField"
   | "EmailField"
-  | "NameField";
+  | "NameField"
+  | "DateField";
 
 export type FormElementInstance = {
   id: string;
@@ -23,7 +24,15 @@ export type FormElement = {
   attributesComponent: React.FC<{ elementInstance: FormElementInstance }>;
   formComponent: React.FC<{
     elementInstance: FormElementInstance;
-    submitValue: ({ key, value }: { key: string; value: string }) => void;
+    submitValue: ({
+      key,
+      value,
+      type,
+    }: {
+      key: string;
+      value: string;
+      type: FormElementType;
+    }) => void;
   }>;
 
   builderComponent: React.FC<{ elementInstance: FormElementInstance }>;
@@ -31,11 +40,6 @@ export type FormElement = {
     icon: React.ElementType;
     label: string;
   };
-
-  // validate: (
-  //   schema: ZodObject<any>,
-  //   value: string
-  // ) => { error: string | null; isValid: boolean };
 };
 
 type FormElements = {
@@ -47,6 +51,7 @@ export const FormElements: FormElements = {
   NumberField: NumberElementField,
   EmailField: EmailElementField,
   NameField: NameElementField,
+  DateField: DateElementField,
 };
 
 export const defaultExtraAttributes = {

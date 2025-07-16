@@ -1,4 +1,3 @@
-import { GoNumber } from "react-icons/go";
 import {
   defaultExtraAttributes,
   type CustomElementInstance,
@@ -20,52 +19,54 @@ import {
   FormDescription,
 } from "@/components/ui/form";
 
+import { CiCalendarDate } from "react-icons/ci";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useBuilderContext } from "../context/builder-context";
-
+import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import type { ElementInstanceProps, SubmitValue } from "@/types/forms";
-import { useRef, useState } from "react";
-import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
+import { useRef } from "react";
 
-const type: FormElementType = "NumberField";
+const type: FormElementType = "DateField";
 
-export const NumberElementField: FormElement = {
+export const DateElementField: FormElement = {
   constructor: (id) => ({
     id,
     type,
-    extraAttributes: { ...defaultExtraAttributes, label: "Number Input" },
+    extraAttributes: { ...defaultExtraAttributes, label: "Date" },
   }),
-  type,
   attributesComponent: ({
     elementInstance,
   }: {
     elementInstance: FormElementInstance;
-  }) => <NumberAttributesComponent elementInstance={elementInstance} />,
+  }) => <DateAttributesComponent elementInstance={elementInstance} />,
+
   builderComponent: ({
     elementInstance,
   }: {
     elementInstance: FormElementInstance;
-  }) => <NumberBuilderComponent elementInstance={elementInstance} />,
+  }) => <DateBuilderComponent elementInstance={elementInstance} />,
+
   formComponent: ({
     elementInstance,
     submitValue,
   }: ElementInstanceProps & SubmitValue) => (
-    <NumberFormComponent
+    <DateFormComponent
       elementInstance={elementInstance}
       submitValue={submitValue}
     />
   ),
+  type,
   controlBtn: {
-    icon: GoNumber,
-    label: "Number Field",
+    icon: CiCalendarDate,
+    label: "Date Field",
   },
 };
 
-const NumberBuilderComponent = ({
+const DateBuilderComponent = ({
   elementInstance,
 }: {
   elementInstance: FormElementInstance;
@@ -79,13 +80,19 @@ const NumberBuilderComponent = ({
       <Label className="text-white text-xs">
         {label} {required && "*"}
       </Label>
-      <Input readOnly disabled placeholder={placeholder} />
+      <Input
+        readOnly
+        disabled
+        type="date"
+        className="placeholder:text-xs"
+        placeholder={placeholder}
+      />
 
       <span className="text-xs">{description}</span>
     </div>
   );
 };
-const NumberAttributesComponent = ({
+const DateAttributesComponent = ({
   elementInstance,
 }: {
   elementInstance: FormElementInstance;
@@ -93,24 +100,24 @@ const NumberAttributesComponent = ({
   const { updateElementProps } = useBuilderContext();
   const element = elementInstance as CustomElementInstance;
 
-  const NumberElementSchema = z.object({
+  const dateElementSchema = z.object({
     label: z.string(),
     description: z.string().max(100),
     required: z.boolean(),
     placeholder: z.string(),
   });
 
-  type NumberElementFormValues = z.infer<typeof NumberElementSchema>;
+  type DateElementFormValues = z.infer<typeof dateElementSchema>;
   const { extraAttributes } = element;
 
-  const form = useForm<NumberElementFormValues>({
-    resolver: zodResolver(NumberElementSchema),
+  const form = useForm<DateElementFormValues>({
+    resolver: zodResolver(dateElementSchema),
     defaultValues: {
       ...extraAttributes,
     },
   });
 
-  const handleSubmit = (values: NumberElementFormValues) => {
+  const handleSubmit = (values: DateElementFormValues) => {
     try {
       const { extraAttributes, ...rest } = elementInstance;
       const element = {
@@ -125,10 +132,11 @@ const NumberAttributesComponent = ({
       console.log({ error });
     }
   };
+
   return (
     <Form {...form}>
       <form
-        className="flex flex-col gap-3 Number-muted-foreground w-full"
+        className="flex flex-col gap-3 text-muted-foreground w-full"
         onSubmit={(e) => e.preventDefault()}
         onBlur={form.handleSubmit(handleSubmit)}
       >
@@ -136,8 +144,8 @@ const NumberAttributesComponent = ({
           name="label"
           control={form.control}
           render={({ field }) => (
-            <FormItem className="Number-xs">
-              <FormLabel className="Number-white">Label</FormLabel>
+            <FormItem className="text-xs">
+              <FormLabel className="text-white">Label</FormLabel>
               <FormControl>
                 <Input
                   onKeyDown={(e) => {
@@ -146,7 +154,7 @@ const NumberAttributesComponent = ({
                     }
                   }}
                   {...field}
-                  className="Number-xs"
+                  className="text-xs"
                   placeholder="field label"
                 />
               </FormControl>
@@ -159,7 +167,7 @@ const NumberAttributesComponent = ({
           control={form.control}
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="Number-white">Placeholder</FormLabel>
+              <FormLabel className="text-white">Placeholder</FormLabel>
               <FormControl>
                 <Input
                   onKeyDown={(e) => {
@@ -179,7 +187,7 @@ const NumberAttributesComponent = ({
           control={form.control}
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="Number-white">Description</FormLabel>
+              <FormLabel className="text-white">Description</FormLabel>
               <FormControl>
                 <Textarea
                   onKeyDown={(e) => {
@@ -202,8 +210,8 @@ const NumberAttributesComponent = ({
           render={({ field }) => (
             <FormItem className="border border-accent rounded-md px-4 py-3 flex justify-between items-start">
               <div className="flex flex-col items-start gap-1">
-                <FormLabel className="Number-white">Required</FormLabel>
-                <p className="Number-xs ">
+                <FormLabel className="text-white">Required</FormLabel>
+                <p className="text-xs ">
                   this field determines whether this field is optional or not
                 </p>
               </div>
@@ -222,7 +230,7 @@ const NumberAttributesComponent = ({
   );
 };
 
-const NumberFormComponent = ({
+const DateFormComponent = ({
   elementInstance,
   submitValue,
 }: ElementInstanceProps & SubmitValue) => {
@@ -230,18 +238,21 @@ const NumberFormComponent = ({
     extraAttributes: { description, label, placeholder, required },
   } = elementInstance as CustomElementInstance;
 
-  const NumberSchema = z.object({
-    value: required ? z.string() : z.string().optional(),
+  const DateSchema = z.object({
+    value: required ? z.coerce.date() : z.coerce.date().optional(),
   });
 
-  type NumberInputValue = z.infer<typeof NumberSchema>;
-  const form = useForm<NumberInputValue>({
-    resolver: zodResolver(NumberSchema),
+  type DateInputValue = z.infer<typeof DateSchema>;
+  const form = useForm<DateInputValue>({
+    resolver: zodResolver(DateSchema),
   });
-
   const buttonRef = useRef<HTMLButtonElement | null>(null);
-  const handleSubmit = (values: NumberInputValue) => {
-    submitValue({ key: label, value: values.value ?? "", type });
+  const handleSubmit = (values: DateInputValue) => {
+    submitValue({
+      key: label,
+      value: values?.value?.toDateString() ?? "",
+      type,
+    });
   };
   return (
     <Form {...form}>
@@ -255,7 +266,7 @@ const NumberFormComponent = ({
         <FormField
           name="value"
           control={form.control}
-          render={({ field }) => (
+          render={({ field: { value, ...rest } }) => (
             <FormItem>
               <FormLabel>
                 {label} {required && "*"}
@@ -270,9 +281,10 @@ const NumberFormComponent = ({
                       e.currentTarget.blur();
                     }
                   }}
-                  type="number"
+                  type="date"
                   placeholder={placeholder}
-                  {...field}
+                  value={value?.toDateString()}
+                  {...rest}
                 />
               </FormControl>
 

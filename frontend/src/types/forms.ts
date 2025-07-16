@@ -42,5 +42,13 @@ export type ElementInstanceProps = {
 };
 
 export type SubmitValue = {
-  submitValue: ({ key, value }: { key: string; value: string }) => void;
+  submitValue: ({
+    key,
+    value,
+    type,
+  }: {
+    key: string;
+    value: string;
+    type: FormElementType;
+  }) => void;
 };

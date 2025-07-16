@@ -28,6 +28,7 @@ export const Controlsbar = () => {
               <div className="flex flex-col items-start gap-2">
                 <ControlItem formElement={FormElements.NumberField} />
                 <ControlItem formElement={FormElements.TextField} />
+                <ControlItem formElement={FormElements.DateField} />
                 {/* <ControlItem formElement={FormElements.MultiChoice} /> */}
               </div>
             </div>

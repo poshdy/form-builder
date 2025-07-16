@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Get,
   HttpCode,
   HttpStatus,
   Param,
@@ -15,6 +16,18 @@ import { ZodValidationPipe } from 'nestjs-zod';
 @Controller('forms/submission')
 export class SubmissionController {
   constructor(private readonly formService: FormService) {}
+
+  @HttpCode(HttpStatus.OK)
+  @Get(':formId/content')
+  async getFormContent(@Param('formId') formId: string) {
+    const form = await this.formService.getForm({
+      formId,
+    });
+
+    return {
+      data: form,
+    };
+  }
 
   @HttpCode(HttpStatus.OK)
   @Patch(':formId/visit')
