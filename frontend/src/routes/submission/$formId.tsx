@@ -97,6 +97,7 @@ function RouteComponent() {
         };
       });
 
+      console.log({ submissions });
       const data = JSON.stringify(submissions);
       await mutateAsync(
         {
@@ -105,9 +106,7 @@ function RouteComponent() {
         },
         {
           onSuccess() {
-            // redirect to success page
             window.localStorage.removeItem(formId);
-
             window.localStorage.setItem(
               formId,
               JSON.stringify({ viewed: true, submitted: true })

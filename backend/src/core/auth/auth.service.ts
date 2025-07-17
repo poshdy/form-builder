@@ -43,6 +43,7 @@ export class AuthService {
       userId: user.id,
       accountId: acc.id,
     };
+
     const [accessToken, refreshToken] = await Promise.all([
       this.authUtils.generateToken(tokenPayload, '10m'),
       this.authUtils.generateToken(tokenPayload, '7d'),
@@ -110,16 +111,16 @@ export class AuthService {
 
   async refreshToken(user: UserTokenPayload) {
     if (!user) {
-      throw new ForbiddenException('Access Denied112');
+      throw new ForbiddenException('Access Denied');
     }
     const account = await this.accountService.getOne(user.email);
 
     if (!account) {
-      throw new ForbiddenException('Access Deniedfff');
+      throw new ForbiddenException('Access Denied');
     }
 
     if (user.refreshToken !== account.refreshToken) {
-      throw new ForbiddenException('Access Deniedfgdb');
+      throw new ForbiddenException('Access Denied');
     }
 
     const { refreshToken, ...rest } = user;

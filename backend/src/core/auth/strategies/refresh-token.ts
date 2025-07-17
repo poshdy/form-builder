@@ -16,9 +16,11 @@ export class RefreshTokenStrategy extends PassportStrategy(
       passReqToCallback: true,
       jwtFromRequest: ExtractJwt.fromExtractors([
         (request: Request) => {
+          console.log({ cookies: request.cookies });
           if (request && request.cookies) {
             const refreshToken = request.cookies['refresh-token'];
 
+            console.log({ refreshToken });
             if (refreshToken) {
               return refreshToken;
             }
@@ -34,6 +36,8 @@ export class RefreshTokenStrategy extends PassportStrategy(
     if (!refreshToken) {
       throw new UnauthorizedException('No refresh token provided');
     }
+
+    console.log({ refreshToken2: refreshToken });
     return {
       refreshToken,
       ...payload,

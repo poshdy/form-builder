@@ -29,7 +29,7 @@ export const Controlsbar = () => {
                 <ControlItem formElement={FormElements.NumberField} />
                 <ControlItem formElement={FormElements.TextField} />
                 <ControlItem formElement={FormElements.DateField} />
-                {/* <ControlItem formElement={FormElements.MultiChoice} /> */}
+                <ControlItem formElement={FormElements.SelectField} />
               </div>
             </div>
           </section>

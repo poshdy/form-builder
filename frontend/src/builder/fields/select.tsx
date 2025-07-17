@@ -19,55 +19,67 @@ import {
   FormDescription,
 } from "@/components/ui/form";
 
-import { CiCalendarDate } from "react-icons/ci";
+import { IoIosArrowDropdown } from "react-icons/io";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { useFieldArray, useForm } from "react-hook-form";
 import { useBuilderContext } from "../context/builder-context";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import type { ElementInstanceProps, SubmitValue } from "@/types/forms";
 import { Button } from "@/components/ui/button";
 import { useRef } from "react";
-import { dayjs, formatDateStyle } from "@/lib/dayjs";
+import { FaTrash } from "react-icons/fa6";
 
-const type: FormElementType = "DateField";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
-export const DateElementField: FormElement = {
+const type: FormElementType = "SelectField";
+
+export const SelectElementField: FormElement = {
   constructor: (id) => ({
     id,
     type,
-    extraAttributes: { ...defaultExtraAttributes, label: "Date" },
+    extraAttributes: {
+      ...defaultExtraAttributes,
+      label: "Select Input",
+      options: [],
+    },
   }),
   attributesComponent: ({
     elementInstance,
   }: {
     elementInstance: FormElementInstance;
-  }) => <DateAttributesComponent elementInstance={elementInstance} />,
+  }) => <SelectAttributesComponent elementInstance={elementInstance} />,
 
   builderComponent: ({
     elementInstance,
   }: {
     elementInstance: FormElementInstance;
-  }) => <DateBuilderComponent elementInstance={elementInstance} />,
+  }) => <SelectBuilderComponent elementInstance={elementInstance} />,
 
   formComponent: ({
     elementInstance,
     submitValue,
   }: ElementInstanceProps & SubmitValue) => (
-    <DateFormComponent
+    <SelectFormComponent
       elementInstance={elementInstance}
       submitValue={submitValue}
     />
   ),
   type,
   controlBtn: {
-    icon: CiCalendarDate,
-    label: "Date Field",
+    icon: IoIosArrowDropdown,
+    label: "Select Field",
   },
 };
 
-const DateBuilderComponent = ({
+const SelectBuilderComponent = ({
   elementInstance,
 }: {
   elementInstance: FormElementInstance;
@@ -84,7 +96,6 @@ const DateBuilderComponent = ({
       <Input
         readOnly
         disabled
-        type="date"
         className="placeholder:text-xs"
         placeholder={placeholder}
       />
@@ -93,7 +104,7 @@ const DateBuilderComponent = ({
     </div>
   );
 };
-const DateAttributesComponent = ({
+const SelectAttributesComponent = ({
   elementInstance,
 }: {
   elementInstance: FormElementInstance;
@@ -101,24 +112,34 @@ const DateAttributesComponent = ({
   const { updateElementProps } = useBuilderContext();
   const element = elementInstance as CustomElementInstance;
 
-  const dateElementSchema = z.object({
+  const selectElementSchema = z.object({
     label: z.string(),
     description: z.string().max(100),
     required: z.boolean(),
     placeholder: z.string(),
+    options: z.array(
+      z.object({
+        option: z.string(),
+      })
+    ),
   });
 
-  type DateElementFormValues = z.infer<typeof dateElementSchema>;
+  type SelectElementFormValues = z.infer<typeof selectElementSchema>;
   const { extraAttributes } = element;
 
-  const form = useForm<DateElementFormValues>({
-    resolver: zodResolver(dateElementSchema),
+  const form = useForm<SelectElementFormValues>({
+    resolver: zodResolver(selectElementSchema),
     defaultValues: {
       ...extraAttributes,
     },
   });
 
-  const handleSubmit = (values: DateElementFormValues) => {
+  const { append, fields, remove } = useFieldArray({
+    name: "options",
+    control: form.control,
+  });
+
+  const handleSubmit = (values: SelectElementFormValues) => {
     try {
       const { extraAttributes, ...rest } = elementInstance;
       const element = {
@@ -133,7 +154,6 @@ const DateAttributesComponent = ({
       console.log({ error });
     }
   };
-
   return (
     <Form {...form}>
       <form
@@ -205,6 +225,49 @@ const DateAttributesComponent = ({
           )}
         />
 
+        <div className="space-y-2">
+          {fields.map((field, id) => (
+            <FormField
+              key={field.id}
+              control={form.control}
+              name={`options.${id}.option`}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Options</FormLabel>
+                  <FormControl>
+                    <div className="flex items-center gap-2">
+                      <Input
+                        onKeyDown={(e) => {
+                          if (e.key == "Enter") {
+                            e.currentTarget.blur();
+                          }
+                        }}
+                        type="text"
+                        {...field}
+                        placeholder="option"
+                      />
+                      <Button
+                        onClick={() => remove(id)}
+                        size={"icon"}
+                        variant={"destructive"}
+                      >
+                        <FaTrash className="text-secondary-foreground" />
+                      </Button>
+                    </div>
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+          ))}
+          <Button
+            className="w-full"
+            type="button"
+            onClick={() => append({ option: "" })}
+            variant={"secondary"}
+          >
+            Add Options
+          </Button>
+        </div>
         <FormField
           name="required"
           control={form.control}
@@ -231,35 +294,32 @@ const DateAttributesComponent = ({
   );
 };
 
-const DateFormComponent = ({
+type SelectElementInstance = CustomElementInstance & {
+  extraAttributes: {
+    options: { option: string }[];
+  };
+};
+const SelectFormComponent = ({
   elementInstance,
   submitValue,
 }: ElementInstanceProps & SubmitValue) => {
   const {
-    extraAttributes: { description, label, placeholder, required },
-  } = elementInstance as CustomElementInstance;
+    extraAttributes: { description, label, placeholder, required, options },
+  } = elementInstance as SelectElementInstance;
 
-  const DateSchema = z.object({
-    value: required ? z.string().date() : z.string().date().optional(),
+  const textSchema = z.object({
+    value: required ? z.string() : z.string().optional(),
   });
 
-  type DateInputValue = z.infer<typeof DateSchema>;
-  const form = useForm<DateInputValue>({
-    resolver: zodResolver(DateSchema),
+  type SelectInputValue = z.infer<typeof textSchema>;
+  const form = useForm<SelectInputValue>({
+    resolver: zodResolver(textSchema),
   });
   const buttonRef = useRef<HTMLButtonElement | null>(null);
-  const handleSubmit = (values: DateInputValue) => {
-    console.log({ values });
-    submitValue({
-      key: label,
-      value: values?.value ?? "",
-      type,
-    });
+  const handleSubmit = (values: SelectInputValue) => {
+    submitValue({ key: label, value: values.value ?? "", type });
   };
 
-  console.log({
-    value: form.getValues(),
-  });
   return (
     <Form {...form}>
       <form
@@ -278,20 +338,29 @@ const DateFormComponent = ({
                 {label} {required && "*"}
               </FormLabel>
 
-              <FormControl>
-                <Input
-                  onKeyUp={(e) => {
-                    const keyPressed = e.key;
+              <Select {...field} onValueChange={field.onChange}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder={placeholder} />
+                  </SelectTrigger>
+                </FormControl>
 
-                    if (keyPressed == "Enter") {
-                      e.currentTarget.blur();
-                    }
-                  }}
-                  type="date"
-                  placeholder={placeholder}
-                  {...field}
-                />
-              </FormControl>
+                <SelectContent>
+                  {options?.map((opt, idx) => (
+                    <SelectItem
+                      onKeyDown={(e) => {
+                        if (e.key == "Enter") {
+                          e.currentTarget.blur();
+                        }
+                      }}
+                      value={opt.option}
+                      key={idx}
+                    >
+                      {opt.option}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
 
               <FormMessage />
               {description && <FormDescription>{description}</FormDescription>}

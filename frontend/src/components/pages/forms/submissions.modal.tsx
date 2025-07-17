@@ -71,9 +71,9 @@ export const SubmissionModal = ({
   }, [currentIdx]);
   return (
     <Dialog onOpenChange={onClose} open={open}>
-      <DialogContent className="h-[70vh] overflow-y-scroll">
+      <DialogContent className="min-w-[600px] w-[800px] max-w-5xl h-[80vh] overflow-y-scroll">
         <DialogHeader>
-          <div className="flex items-center mt- justify-between">
+          <div className="flex items-center mt-2 justify-between">
             <div>
               <DialogTitle>{formTitle}</DialogTitle>
               <DialogDescription>Navigate between responses</DialogDescription>
@@ -133,6 +133,8 @@ const renderValues = (type: FormElementType, values: SubmissionValues) => {
     case "NumberField":
     case "EmailField":
     case "NameField":
+    case "DateField":
+    case "SelectField":
       return (
         <div className="ml-7">
           <h2 className="text-sm">{values.answer}</h2>

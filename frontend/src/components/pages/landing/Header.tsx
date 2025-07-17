@@ -4,12 +4,14 @@ import { Link } from "@tanstack/react-router";
 import { Menu, Plus, Settings, User, X } from "lucide-react";
 import { useState } from "react";
 import { CreateUpdateFormModal } from "../forms/create-update-modal";
+import { useUser } from "@/store/use-user";
 
 type HeaderProps = {
   page: "home" | "form";
 };
 
 const Header = ({ page }: HeaderProps) => {
+  const { user } = useUser();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const homeItems = [
@@ -22,7 +24,6 @@ const Header = ({ page }: HeaderProps) => {
       <div className="container mx-auto px-4 py-4 flex items-center justify-between">
         <Logo />
 
-        {/* Desktop Navigation */}
         {page == "home" ? (
           <nav className="hidden md:flex items-center space-x-8">
             {homeItems.map((item, idx) => (
@@ -43,12 +44,24 @@ const Header = ({ page }: HeaderProps) => {
         <div className="hidden md:flex items-center space-x-4">
           {page == "home" ? (
             <>
-              <Button variant="ghost" size="sm">
-                Sign In
-              </Button>
-              <Button variant="default" size="sm">
-                Start Free Trial
-              </Button>
+              {user ? (
+                <Link
+                  to="/forms"
+                  className="px-3 py-2 font-semibold text-sm rounded-md bg-gradient-to-br from-primary to-accent text-white"
+                >
+                  Go to Dashboard
+                </Link>
+              ) : (
+                <div className="flex items-center gap-2">
+                  <Button variant="ghost" size="sm">
+                    Sign In
+                  </Button>
+
+                  <Button variant="default" size="sm">
+                    Start Free Trial
+                  </Button>
+                </div>
+              )}
             </>
           ) : (
             <FormCta />

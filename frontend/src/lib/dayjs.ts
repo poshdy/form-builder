@@ -7,4 +7,8 @@ export const timeDistance = (date: Date) => {
   return dayjs(date).fromNow();
 };
 
+export const formatDateStyle = (date: Date, style: string = "yyyy-mm-dd") => {
+  return dayjs(date).format(style);
+};
+
 export { dayjs };

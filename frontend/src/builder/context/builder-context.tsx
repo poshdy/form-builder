@@ -35,10 +35,12 @@ export const BuilderContextProvider = ({
 
   const updateElementProps = (id: string, element: FormElementInstance) => {
     setElements((prev) => {
+      console.log({ prev });
       const newElements = [...prev];
       const elementIdx = elements.findIndex((element) => element.id == id);
       newElements[elementIdx] = element;
 
+      console.log({ newElements });
       return newElements;
     });
   };

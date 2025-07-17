@@ -4,13 +4,15 @@ import { EmailElementField } from "./fields/presets/email";
 import { NameElementField } from "./fields/presets/name";
 import { TextElementField } from "./fields/text";
 import { DateElementField } from "./fields/date";
+import { SelectElementField } from "./fields/select";
 
 export type FormElementType =
   | "TextField"
   | "NumberField"
   | "EmailField"
   | "NameField"
-  | "DateField";
+  | "DateField"
+  | "SelectField";
 
 export type FormElementInstance = {
   id: string;
@@ -52,6 +54,7 @@ export const FormElements: FormElements = {
   EmailField: EmailElementField,
   NameField: NameElementField,
   DateField: DateElementField,
+  SelectField: SelectElementField,
 };
 
 export const defaultExtraAttributes = {
